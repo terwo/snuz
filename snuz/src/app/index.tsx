@@ -12,8 +12,12 @@ export default function Home() {
         </View>
 
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Good Evening! 🌙</Text>
-          <Text style={styles.subtitle}>Your bear is getting sleepy...</Text>
+          <Text style={styles.title}>
+            Good Evening! 🌙
+          </Text>
+          <Text style={styles.subtitle}>
+            Your bear is getting sleepy...
+          </Text>
           <Text style={styles.streakText}>
             Sleep consistency streak: 5 days 🔥
           </Text>
@@ -26,46 +30,48 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0f172a", // bg-slate-900
+    backgroundColor: '#1e293b',
   },
   content: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16, // p-4
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
   },
   bearContainer: {
-    width: 256, // w-64
-    height: 256, // h-64
-    backgroundColor: "#1e293b", // bg-slate-800
-    borderRadius: 128, // rounded-full (half of width/height)
-    marginBottom: 32, // mb-8
-    alignItems: "center",
-    justifyContent: "center",
+    width: 256,
+    height: 256,
+    backgroundColor: '#334155',
+    borderRadius: 128,
+    marginBottom: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   bearEmoji: {
-    fontSize: 36, // text-4xl
+    fontSize: 36,
   },
   textContainer: {
-    width: "100%",
-    maxWidth: 384, // max-w-sm
+    width: '100%',
+    maxWidth: 300,
   },
   title: {
-    fontSize: 24, // text-2xl
-    fontWeight: "bold",
-    color: "#ffffff", // text-white
-    marginBottom: 8, // mb-2
-    textAlign: "center",
+    fontSize: 24,
+    fontFamily: 'Corben',
+    color: '#ffffff',
+    marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 18, // text-lg
-    color: "#d1d5db", // text-gray-300
-    textAlign: "center",
+    fontSize: 18,
+    fontFamily: 'Geist',
+    color: '#d1d5db',
+    textAlign: 'center',
   },
   streakText: {
-    fontSize: 14, // text-sm
-    color: "#9ca3af", // text-gray-400
-    textAlign: "center",
-    marginTop: 8, // mt-2
+    fontSize: 14,
+    fontFamily: 'Geist',
+    color: '#9ca3af',
+    textAlign: 'center',
+    marginTop: 8,
   },
 });
