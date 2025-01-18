@@ -1,91 +1,59 @@
-// app/group.tsx
-import { View, Text, TouchableOpacity, Platform } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Platform,
+  StyleSheet,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import * as Notifications from "expo-notifications";
 import AlarmPicker from "../components/AlarmPicker";
-
-// Configure notifications
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+import { registerForPushNotificationsAsync } from "../utils/notificationConfig";
 
 export default function Group() {
   const [showPicker, setShowPicker] = useState(false);
   const [permission, setPermission] = useState(false);
 
   useEffect(() => {
-    registerForPushNotificationsAsync();
+    async function setupNotifications() {
+      const hasPermission = await registerForPushNotificationsAsync();
+      setPermission(hasPermission);
+    }
+    setupNotifications();
   }, []);
 
-  async function registerForPushNotificationsAsync() {
-    if (Platform.OS === "android") {
-      await Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-
-    setPermission(finalStatus === "granted");
-  }
-
   return (
-    <SafeAreaView className="flex-1 bg-slate-900">
-      <View className="p-4 flex items-center">
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
         {/* Current Group Alarm */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4 w-full items-center">
-          <Text className="text-white text-lg font-bold mb-2 bg-slate-700 px-6 py-2 rounded-full text-center">
-            Squad Alarm 🚨
-          </Text>
-          <Text className="text-3xl text-white font-bold mb-2">7:30 AM</Text>
-          <Text className="text-gray-400 bg-slate-700 px-4 py-1.5 rounded-full text-center">
-            Tomorrow • 3 squad members
-          </Text>
+        <View style={styles.alarmContainer}>
+          <Text style={styles.alarmHeader}>Squad Alarm 🚨</Text>
+          <Text style={styles.alarmTime}>7:30 AM</Text>
+          <Text style={styles.alarmInfo}>Tomorrow • 3 squad members</Text>
         </View>
 
         {/* Set New Alarm Button */}
         <TouchableOpacity
-          className="bg-blue-500 p-4 rounded-xl flex-row items-center justify-center mb-4 w-full"
+          style={styles.setAlarmButton}
           onPress={() => setShowPicker(true)}
         >
           <Ionicons name="alarm-outline" size={24} color="white" />
-          <Text className="text-white font-bold ml-2">Set Squad Alarm</Text>
+          <Text style={styles.setAlarmText}>Set Squad Alarm</Text>
         </TouchableOpacity>
 
         {/* Squad Members Header */}
-        <Text className="text-white text-lg font-bold mb-4 bg-slate-700 px-6 py-2 rounded-full text-center">
-          Squad Members
-        </Text>
+        <Text style={styles.sectionHeader}>Squad Members</Text>
 
         {/* Squad Members List */}
-        <View className="bg-slate-800 rounded-xl p-4 w-full">
-          <View className="flex-row items-center justify-center mb-2">
-            <View className="w-10 h-10 bg-blue-500 rounded-full items-center justify-center">
+        <View style={styles.membersContainer}>
+          <View style={styles.memberRow}>
+            <View style={styles.memberAvatar}>
               <Text>🐻</Text>
             </View>
-            <View className="ml-3 items-center">
-              <Text className="text-white bg-slate-700 px-4 py-1.5 rounded-full text-center">
-                Sarah
-              </Text>
-              <Text className="text-gray-400 bg-slate-700 px-4 py-1.5 rounded-full mt-2 text-center">
-                Ready for bed 😴
-              </Text>
+            <View style={styles.memberInfo}>
+              <Text style={styles.memberName}>Sarah</Text>
+              <Text style={styles.memberStatus}>Ready for bed 😴</Text>
             </View>
           </View>
         </View>
@@ -98,3 +66,117 @@ export default function Group() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#475569", // bg-slate-600
+  },
+  content: {
+    padding: 16, // p-4
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  alarmContainer: {
+    backgroundColor: "#1e293b", // bg-slate-800
+    borderRadius: 12, // rounded-xl
+    padding: 16, // p-4
+    marginBottom: 16, // mb-4
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  alarmHeader: {
+    color: "white",
+    fontSize: 18, // text-lg
+    fontWeight: "bold",
+    marginBottom: 8, // mb-2
+    backgroundColor: "#334155", // bg-slate-700
+    paddingHorizontal: 24, // px-6
+    paddingVertical: 8, // py-2
+    borderRadius: 9999, // rounded-full
+    textAlign: "center",
+  },
+  alarmTime: {
+    fontSize: 30, // text-3xl
+    color: "white",
+    fontWeight: "bold",
+    marginBottom: 8, // mb-2
+  },
+  alarmInfo: {
+    color: "#9ca3af", // text-gray-400
+    backgroundColor: "#334155", // bg-slate-700
+    paddingHorizontal: 16, // px-4
+    paddingVertical: 6, // py-1.5
+    borderRadius: 9999, // rounded-full
+    textAlign: "center",
+  },
+  setAlarmButton: {
+    backgroundColor: "#3b82f6", // bg-blue-500
+    padding: 16, // p-4
+    borderRadius: 12, // rounded-xl
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16, // mb-4
+    width: "100%",
+  },
+  setAlarmText: {
+    color: "white",
+    fontWeight: "bold",
+    marginLeft: 8, // ml-2
+  },
+  sectionHeader: {
+    color: "white",
+    fontSize: 18, // text-lg
+    fontWeight: "bold",
+    marginBottom: 16, // mb-4
+    backgroundColor: "#334155", // bg-slate-700
+    paddingHorizontal: 24, // px-6
+    paddingVertical: 8, // py-2
+    borderRadius: 9999, // rounded-full
+    textAlign: "center",
+  },
+  membersContainer: {
+    backgroundColor: "#1e293b", // bg-slate-800
+    borderRadius: 12, // rounded-xl
+    padding: 16, // p-4
+    width: "100%",
+  },
+  memberRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8, // mb-2
+  },
+  memberAvatar: {
+    width: 40, // w-10
+    height: 40, // h-10
+    backgroundColor: "#3b82f6", // bg-blue-500
+    borderRadius: 20, // rounded-full
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  memberInfo: {
+    marginLeft: 12, // ml-3
+    alignItems: "center",
+  },
+  memberName: {
+    color: "white",
+    backgroundColor: "#334155", // bg-slate-700
+    paddingHorizontal: 16, // px-4
+    paddingVertical: 6, // py-1.5
+    borderRadius: 9999, // rounded-full
+    textAlign: "center",
+  },
+  memberStatus: {
+    color: "#9ca3af", // text-gray-400
+    backgroundColor: "#334155", // bg-slate-700
+    paddingHorizontal: 16, // px-4
+    paddingVertical: 6, // py-1.5
+    borderRadius: 9999, // rounded-full
+    marginTop: 8, // mt-2
+    textAlign: "center",
+  },
+});

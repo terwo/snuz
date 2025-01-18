@@ -1,59 +1,38 @@
-// components/AlarmPicker.tsx
 import React, { useState } from "react";
-import { View, Text, Modal, TouchableOpacity, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  Platform,
+  StyleSheet,
+} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import * as Notifications from "expo-notifications";
-
-// Set up notifications handler
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+import { scheduleAlarm } from "../utils/notificationConfig";
 
 export default function AlarmPicker({ isVisible, onClose }) {
   const [date, setDate] = useState(new Date());
 
-  const scheduleAlarm = async (selectedDate) => {
-    // Request permissions
-    const { status } = await Notifications.requestPermissionsAsync();
-    if (status !== "granted") {
-      alert("Need notification permissions to set alarms!");
-      return;
+  const handleScheduleAlarm = async (selectedDate) => {
+    const success = await scheduleAlarm(selectedDate);
+    if (success) {
+      alert("Alarm set successfully! 🚨");
+      onClose();
     }
-
-    // Cancel any existing alarms
-    await Notifications.cancelAllScheduledNotificationsAsync();
-
-    // Schedule the new alarm
-    const trigger = new Date(selectedDate);
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Wake Up! 🐻",
-        body: "Time to start the day with your bear squad!",
-        sound: true,
-      },
-      trigger,
-    });
-
-    alert("Alarm set successfully! 🚨");
-    onClose();
   };
 
   if (Platform.OS === "ios") {
     return (
       <Modal visible={isVisible} transparent={true} animationType="slide">
-        <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-white rounded-t-3xl">
-            <View className="p-4 flex-row justify-between items-center border-b border-gray-200">
+        <View style={styles.modalContainer}>
+          <View style={styles.contentContainer}>
+            <View style={styles.header}>
               <TouchableOpacity onPress={onClose}>
-                <Text className="text-blue-500 text-lg">Cancel</Text>
+                <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
-              <Text className="text-lg font-semibold">Set Squad Alarm</Text>
-              <TouchableOpacity onPress={() => scheduleAlarm(date)}>
-                <Text className="text-blue-500 text-lg">Set</Text>
+              <Text style={styles.title}>Set Squad Alarm</Text>
+              <TouchableOpacity onPress={() => handleScheduleAlarm(date)}>
+                <Text style={styles.buttonText}>Set</Text>
               </TouchableOpacity>
             </View>
             <DateTimePicker
@@ -63,6 +42,7 @@ export default function AlarmPicker({ isVisible, onClose }) {
               onChange={(event, selectedDate) => {
                 setDate(selectedDate || date);
               }}
+              textColor="#000000"
             />
           </View>
         </View>
@@ -70,7 +50,6 @@ export default function AlarmPicker({ isVisible, onClose }) {
     );
   }
 
-  // Android uses the native time picker
   return (
     isVisible && (
       <DateTimePicker
@@ -80,10 +59,41 @@ export default function AlarmPicker({ isVisible, onClose }) {
         onChange={(event, selectedDate) => {
           onClose();
           if (selectedDate) {
-            scheduleAlarm(selectedDate);
+            handleScheduleAlarm(selectedDate);
           }
         }}
+        textColor="#000000"
       />
     )
   );
 }
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  contentContainer: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+  },
+  header: {
+    padding: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#000000",
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "#3b82f6",
+  },
+});
