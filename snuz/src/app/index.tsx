@@ -1,32 +1,90 @@
-// app/index.tsx
-import { View, Text, StyleSheet, Image } from "react-native"; // Import the Image component
-
+// app/welcome.tsx
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  Image,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../styles/theme";
 import { combineTypography } from "../styles/typography";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { useAuth } from "../context/auth";
 
-export default function Home() {
+export default function Welcome() {
+  const router = useRouter();
+  const { login } = useAuth();
+  const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async () => {
+    if (!name.trim()) return;
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await login(name.trim());
+      router.replace("/(tabs)/");
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={combineTypography(theme.typography.title, styles.title)}>
-          Mornin' Nina!
+          This is Snooze
         </Text>
 
-        <View style={styles.mainContent}>
-          <Text style={combineTypography(theme.typography.h2, styles.status)}>
-            Sleeping in
-          </Text>
-          <Text style={styles.timer}>00:00:00</Text>
+        <Text style={combineTypography(theme.typography.h2, styles.subtitle)}>
+          your daily wake-up companion
+        </Text>
 
-          {/* Replace the bear container with just the image */}
-          <Image
-            source={require("../../assets/images/snooze.png")} // You'll need the actual bear illustration
-            style={styles.bearImage}
-            resizeMode="contain"
+        <Image
+          source={require("../../assets/images/snooze.png")}
+          style={styles.bearImage}
+          resizeMode="contain"
+        />
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your name"
+            placeholderTextColor={"grey"}
+            value={name}
+            onChangeText={setName}
           />
 
-          <Text style={styles.message}>Let's have a great day.</Text>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              pressed && styles.buttonPressed,
+              isLoading && styles.buttonDisabled,
+            ]}
+            onPress={handleSubmit}
+            disabled={isLoading}
+          >
+            <Text style={styles.buttonText}>
+              {isLoading ? "Loading..." : "Continue"}
+            </Text>
+          </Pressable>
+
+          {error ? (
+            <Text
+              style={combineTypography(theme.typography.p, styles.errorText)}
+            >
+              {error}
+            </Text>
+          ) : null}
         </View>
       </View>
     </SafeAreaView>
@@ -36,41 +94,65 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.colors.background.main,
   },
   content: {
     flex: 1,
     padding: theme.spacing.md,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     color: theme.colors.text.primary,
-    marginTop: theme.spacing.sm,
+    marginBottom: theme.spacing.sm,
+    textAlign: "center",
+  },
+  subtitle: {
+    color: theme.colors.text.primary,
     marginBottom: theme.spacing.xl,
     textAlign: "center",
   },
-  mainContent: {
-    flex: 1,
+  bearImage: {
+    width: "80%",
+    height: undefined,
+    aspectRatio: 1,
+    marginBottom: theme.spacing.xl,
+  },
+  inputContainer: {
+    width: "100%",
     alignItems: "center",
   },
-  status: {
+  input: {
+    width: "90%",
+    backgroundColor: theme.colors.background.menu,
+    borderRadius: 25,
+    padding: theme.spacing.md,
     fontSize: 16,
-    color: "#666666",
-    marginBottom: theme.spacing.sm,
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.md,
   },
-  timer: {
-    fontSize: 18,
-    color: "#333333",
-    // marginBottom: theme.spacing.md,
+  button: {
+    backgroundColor: theme.colors.text.primary,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: 25,
+    width: "90%",
   },
-  bearImage: {
-    width: "100%", // Will take up 80% of the parent container width
-    height: undefined, // Let height adjust automatically
-    aspectRatio: 1, // Maintain 1:1 aspect ratio
-    // marginVertical: theme.spacing.xl,
+  buttonPressed: {
+    opacity: 0.8,
   },
-  message: {
+  buttonDisabled: {
+    // backgroundColor: theme.colors.text.disabled,
+    backgroundColor: "grey",
+  },
+  buttonText: {
+    color: "#FFFFFF",
     fontSize: 16,
-    color: "#666666",
-    marginTop: theme.spacing.xl,
+    textAlign: "center",
+    fontWeight: "600",
+  },
+  errorText: {
+    color: "red",
+    marginTop: theme.spacing.md,
   },
 });

@@ -9,10 +9,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import AlarmPicker from "../components/AlarmPicker";
-import { registerForPushNotificationsAsync } from "../utils/notificationConfig";
-import { theme } from '../styles/theme';
-import { combineTypography } from '../styles/typography';
+import AlarmPicker from "../../components/AlarmPicker";
+import { registerForPushNotificationsAsync } from "../../utils/notificationConfig";
+import { theme } from "../../styles/theme";
+import { combineTypography } from "../../styles/typography";
 
 // Dummy data for the group
 const dummyGroupData = {
@@ -50,7 +50,7 @@ export default function Group() {
       </View> */}
 
       <Image
-        source={require("../../assets/images/snooze_behind.png")} // You'll need the actual bear illustration
+        source={require("../../../assets/images/snooze_behind.png")} // You'll need the actual bear illustration
         style={{
           width: '100%',
           height: undefined,
