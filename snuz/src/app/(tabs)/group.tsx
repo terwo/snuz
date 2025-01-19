@@ -8,10 +8,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import AlarmPicker from "../components/AlarmPicker";
-import { registerForPushNotificationsAsync } from "../utils/notificationConfig";
-import { theme } from '../styles/theme';
-import { combineTypography } from '../styles/typography';
+import AlarmPicker from "../../components/AlarmPicker";
+import { registerForPushNotificationsAsync } from "../../utils/notificationConfig";
+import { theme } from "../../styles/theme";
+import { combineTypography } from "../../styles/typography";
 
 export default function Group() {
   const [showPicker, setShowPicker] = useState(false);
@@ -30,10 +30,14 @@ export default function Group() {
       <View style={styles.content}>
         {/* Current Group Alarm */}
         <View style={styles.alarmContainer}>
-          <Text style={combineTypography(theme.typography.h2, styles.alarmHeader)}>
+          <Text
+            style={combineTypography(theme.typography.h2, styles.alarmHeader)}
+          >
             Squad Alarm 🚨
           </Text>
-          <Text style={combineTypography(theme.typography.title, styles.alarmTime)}>
+          <Text
+            style={combineTypography(theme.typography.title, styles.alarmTime)}
+          >
             7:30 AM
           </Text>
           <Text style={combineTypography(theme.typography.p, styles.alarmInfo)}>
@@ -46,14 +50,22 @@ export default function Group() {
           style={styles.setAlarmButton}
           onPress={() => setShowPicker(true)}
         >
-          <Ionicons name="alarm-outline" size={24} color={theme.colors.background.white} />
-          <Text style={combineTypography(theme.typography.p, styles.setAlarmText)}>
+          <Ionicons
+            name="alarm-outline"
+            size={24}
+            color={theme.colors.background.white}
+          />
+          <Text
+            style={combineTypography(theme.typography.p, styles.setAlarmText)}
+          >
             Set Squad Alarm
           </Text>
         </TouchableOpacity>
 
         {/* Squad Members Header */}
-        <Text style={combineTypography(theme.typography.h2, styles.sectionHeader)}>
+        <Text
+          style={combineTypography(theme.typography.h2, styles.sectionHeader)}
+        >
           Squad Members
         </Text>
 
@@ -64,10 +76,20 @@ export default function Group() {
               <Text style={styles.avatarText}>RD</Text>
             </View>
             <View style={styles.memberInfo}>
-              <Text style={combineTypography(theme.typography.h3, styles.memberName)}>
+              <Text
+                style={combineTypography(
+                  theme.typography.h3,
+                  styles.memberName
+                )}
+              >
                 Robbie Dunn
               </Text>
-              <Text style={combineTypography(theme.typography.p, styles.memberStatus)}>
+              <Text
+                style={combineTypography(
+                  theme.typography.p,
+                  styles.memberStatus
+                )}
+              >
                 Ready for bed 😴
               </Text>
             </View>
@@ -100,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.xl,
-    alignItems: 'center',
+    alignItems: "center",
   },
   alarmHeader: {
     color: theme.colors.text.primary,
@@ -115,9 +137,9 @@ const styles = StyleSheet.create({
   },
   setAlarmButton: {
     backgroundColor: theme.colors.accent,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: theme.spacing.md,
     borderRadius: 12,
     marginBottom: theme.spacing.xl,
@@ -136,8 +158,8 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
   },
   memberRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: theme.spacing.sm,
   },
   memberAvatar: {
@@ -145,8 +167,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: theme.colors.accent,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: theme.spacing.sm,
   },
   avatarText: {

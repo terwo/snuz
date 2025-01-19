@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { theme } from '../styles/theme';
-import { combineTypography } from '../styles/typography';
+import { theme } from "../../styles/theme";
+import { combineTypography } from "../../styles/typography";
 
 export default function Profile() {
   return (
@@ -20,10 +20,14 @@ export default function Profile() {
           <View style={styles.avatarContainer}>
             <Text style={styles.avatarEmoji}>🐻</Text>
           </View>
-          <Text style={combineTypography(theme.typography.h1, styles.profileName)}>
+          <Text
+            style={combineTypography(theme.typography.h1, styles.profileName)}
+          >
             Franklin
           </Text>
-          <Text style={combineTypography(theme.typography.p, styles.profileSubtext)}>
+          <Text
+            style={combineTypography(theme.typography.p, styles.profileSubtext)}
+          >
             Sleeping since 2024
           </Text>
         </View>
@@ -31,24 +35,38 @@ export default function Profile() {
         {/* Stats */}
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Text style={combineTypography(theme.typography.h1, styles.statNumber)}>5</Text>
-            <Text style={combineTypography(theme.typography.p, styles.statLabel)}>
+            <Text
+              style={combineTypography(theme.typography.h1, styles.statNumber)}
+            >
+              5
+            </Text>
+            <Text
+              style={combineTypography(theme.typography.p, styles.statLabel)}
+            >
               Day Streak
             </Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={combineTypography(theme.typography.h1, styles.statNumber)}>
+            <Text
+              style={combineTypography(theme.typography.h1, styles.statNumber)}
+            >
               8h 12m
             </Text>
-            <Text style={combineTypography(theme.typography.p, styles.statLabel)}>
+            <Text
+              style={combineTypography(theme.typography.p, styles.statLabel)}
+            >
               Avg Sleep
             </Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={combineTypography(theme.typography.h1, styles.statNumber)}>
+            <Text
+              style={combineTypography(theme.typography.h1, styles.statNumber)}
+            >
               92%
             </Text>
-            <Text style={combineTypography(theme.typography.p, styles.statLabel)}>
+            <Text
+              style={combineTypography(theme.typography.p, styles.statLabel)}
+            >
               Consistency
             </Text>
           </View>
@@ -56,7 +74,9 @@ export default function Profile() {
 
         {/* Friends List */}
         <View style={styles.friendsSection}>
-          <Text style={combineTypography(theme.typography.h2, styles.sectionTitle)}>
+          <Text
+            style={combineTypography(theme.typography.h2, styles.sectionTitle)}
+          >
             Friends
           </Text>
           <View style={styles.friendsContainer}>
@@ -66,14 +86,28 @@ export default function Profile() {
                 <Text>🐻</Text>
               </View>
               <View style={styles.friendInfo}>
-                <Text style={combineTypography(theme.typography.h3, styles.friendName)}>
+                <Text
+                  style={combineTypography(
+                    theme.typography.h3,
+                    styles.friendName
+                  )}
+                >
                   Mike
                 </Text>
-                <Text style={combineTypography(theme.typography.p, styles.friendStatus)}>
+                <Text
+                  style={combineTypography(
+                    theme.typography.p,
+                    styles.friendStatus
+                  )}
+                >
                   Sleeping 😴
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={24} color={theme.colors.text.primary} />
+              <Ionicons
+                name="chevron-forward"
+                size={24}
+                color={theme.colors.text.primary}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -91,7 +125,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileHeader: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: theme.spacing.xl,
   },
   avatarContainer: {
@@ -99,8 +133,8 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: theme.colors.background.menu,
     borderRadius: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: theme.spacing.md,
   },
   avatarEmoji: {
@@ -114,8 +148,8 @@ const styles = StyleSheet.create({
     color: theme.colors.text.primary,
   },
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     padding: theme.spacing.lg,
     backgroundColor: theme.colors.background.menu,
     marginHorizontal: theme.spacing.md,
@@ -123,7 +157,7 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xl,
   },
   statItem: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   statNumber: {
     color: theme.colors.text.primary,
@@ -142,11 +176,11 @@ const styles = StyleSheet.create({
   friendsContainer: {
     backgroundColor: theme.colors.background.menu,
     borderRadius: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   friendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: theme.spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.background.main,
@@ -156,8 +190,8 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: theme.colors.accent,
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: theme.spacing.sm,
   },
   friendInfo: {

@@ -1,12 +1,11 @@
 // app/_layout.tsx
-import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Stack } from "expo-router";
 import { useFonts } from "../hooks/useFonts";
 import { View, Text, StyleSheet } from "react-native";
-import { theme } from '../styles/theme';
-import { combineTypography } from '../styles/typography';
+import { theme } from "../styles/theme";
+import { AuthProvider } from "../context/auth";
 
-export default function AppLayout() {
+export default function RootLayout() {
   const fontsLoaded = useFonts();
 
   if (!fontsLoaded) {
@@ -18,70 +17,23 @@ export default function AppLayout() {
   }
 
   return (
-    <Tabs
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.colors.background.menu,
-        },
-        headerTintColor: theme.colors.text.primary,
-        tabBarStyle: {
-          backgroundColor: theme.colors.background.menu,
-        },
-        tabBarActiveTintColor: theme.colors.accent,
-        tabBarInactiveTintColor: theme.colors.text.primary,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "My Bear",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "bed" : "bed-outline"}
-              color={color}
-              size={24}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="group"
-        options={{
-          title: "Sleep Squad",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "alarm" : "alarm-outline"}
-              color={color}
-              size={24}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "person" : "person-outline"}
-              color={color}
-              size={24}
-            />
-          ),
-        }}
-      />
-    </Tabs>
+    <AuthProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </AuthProvider>
   );
 }
 
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: theme.colors.background.main,
   },
   loadingText: {
     color: theme.colors.text.primary,
-  }
+  },
 });
