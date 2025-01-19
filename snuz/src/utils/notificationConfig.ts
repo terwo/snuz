@@ -47,11 +47,12 @@ export async function scheduleAlarm(selectedDate) {
     const trigger = new Date(selectedDate);
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: 'Wake Up! 🐻',
-        body: 'Time to start the day with your bear squad!',
+        title: 'SNUZ IS SLEEPY! 🐻',
+        body: 'Get to bed before your fellow bears!',
         sound: true,
       },
-      trigger,
+      trigger: null, // send immediately for now
+      // trigger,
     });
   
     return true;

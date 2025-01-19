@@ -6,6 +6,7 @@ import { useAuth } from "../../context/auth";
 import { useGroup } from "../../context/group";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import CountdownNotificationHandler from "@/components/NotificationHandler";
 
 export default function Home() {
   const { username } = useAuth();
@@ -66,7 +67,7 @@ export default function Home() {
     );
   }
 
-  if (!group) {
+  if (group) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
@@ -97,6 +98,7 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CountdownNotificationHandler countdown={timeLeft} />
       <View style={styles.content}>
         <Text style={combineTypography(theme.typography.title, styles.title)}>
           Mornin' {username}!
@@ -158,14 +160,18 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xl,
   } as const,
   createPlanButton: {
-    // backgroundColor: theme.colors.primary.main,
+    backgroundColor: theme.colors.text.accent,
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.xl,
     borderRadius: 25,
     marginTop: "auto",
+    borderWidth: 2,
+    borderColor: theme.colors.background.menu,
   },
   createPlanButtonText: {
-    // color: theme.colors.text.white,
+    color: "white",
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.xl,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -186,20 +192,21 @@ const styles = StyleSheet.create({
     width: "80%",
     height: 300,
     aspectRatio: 1,
-    marginTop: theme.spacing.lg,
-    marginBottom: theme.spacing.lg,
+    marginTop: theme.spacing.xl,
   } as const,
   message: {
     fontSize: 16,
     color: "#666666",
-    marginTop: theme.spacing.md,
-    marginBottom: theme.spacing.lg,
+    marginTop: theme.spacing.xl,
+    marginBottom: theme.spacing.xl,
   },
   sleepButton: {
     backgroundColor: theme.colors.background.main,
-    paddingHorizontal: theme.spacing.xl,
-    paddingVertical: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: 120,
     borderRadius: 25,
+    borderWidth: 2,
+    borderColor: theme.colors.background.menu,
   },
   sleepButtonText: {
     color: theme.colors.text.primary,
