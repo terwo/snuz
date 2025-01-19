@@ -4,6 +4,7 @@ import { theme } from "../styles/theme";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { Audio } from "expo-av";
+import { combineTypography } from "@/styles/typography";
 
 export default function Snooze() {
   const router = useRouter();
@@ -46,7 +47,9 @@ export default function Snooze() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>You hit Snooze</Text>
+        <Text style={combineTypography(theme.typography.title, styles.title)}>
+          You hit Snooze
+        </Text>
         <Text style={styles.time}>{formatTime(timeLeft)}</Text>
 
         <Image
@@ -80,7 +83,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: theme.colors.text.primary,
     marginTop: theme.spacing.xl,
-    fontWeight: "bold",
   },
   subtitle: {
     fontSize: 18,

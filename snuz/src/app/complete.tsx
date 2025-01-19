@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../styles/theme";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { combineTypography } from "@/styles/typography";
 
 export default function Complete() {
   const router = useRouter();
@@ -14,10 +15,10 @@ export default function Complete() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>
+        <Text style={combineTypography(theme.typography.title, styles.title)}>
           {isSnooze === "true" ? "Alarm stopped" : "Morninggg"}
         </Text>
-        <Text style={styles.subtitle}>
+        <Text style={combineTypography(theme.typography.h3, styles.subtitle)}>
           {isSnooze === "true"
             ? "But at what cost..."
             : "Rise n' shine, thanks for not hitting Snooze!"}
@@ -50,13 +51,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: theme.spacing.md,
     alignItems: "center",
-    justifyContent: "space-between",
   },
   title: {
     fontSize: 36,
     color: theme.colors.text.primary,
     marginTop: theme.spacing.xl,
-    fontWeight: "bold",
+    marginBottom: theme.spacing.sm,
     textAlign: "center",
   },
   subtitle: {
@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
     width: "80%",
     height: undefined,
     aspectRatio: 1,
-    marginVertical: theme.spacing.xl,
+    marginVertical: 100,
+    paddingVertical: theme.spacing.md,
   },
   finishButton: {
     backgroundColor: "#DC3545",

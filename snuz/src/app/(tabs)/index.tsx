@@ -86,24 +86,32 @@ const styles = StyleSheet.create({
   status: {
     fontSize: 16,
     color: "#666666",
+    marginTop: theme.spacing.lg,
   },
   timer: {
     fontSize: 18,
     color: "#333333",
   },
   bearImage: {
-    width: "100%",
+    width: "80%",
     height: undefined,
     aspectRatio: 1,
+    marginTop: theme.spacing.lg,
+    marginBottom: theme.spacing.lg,
   },
   message: {
     fontSize: 16,
     color: "#666666",
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
   },
   sleepButton: {
     backgroundColor: theme.colors.background.menu,
-    paddingHorizontal: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
     borderRadius: 25,
+    borderWidth: 2,
+    borderColor: theme.colors.background,
     marginTop: theme.spacing.md,
   },
   sleepButtonText: {
