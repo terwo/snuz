@@ -2,9 +2,10 @@ uwsgi
 fastapi[standard]
 uvicorn
 asyncpg
-databases
 python-dotenv
 python-multipart
 sqlalchemy
 pydantic
 psycopg2-binary
+python-dateutil
+supabase
