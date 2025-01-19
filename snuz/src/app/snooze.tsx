@@ -48,7 +48,7 @@ export default function Snooze() {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={combineTypography(theme.typography.title, styles.title)}>
-          You hit Snooze
+          You hit Snuz :(
         </Text>
         <Text style={styles.time}>{formatTime(timeLeft)}</Text>
 

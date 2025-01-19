@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.md,
     borderRadius: 25,
     borderWidth: 2,
-    borderColor: theme.colors.background,
+    borderColor: theme.colors.background.main,
     marginTop: theme.spacing.md,
   },
   sleepButtonText: {

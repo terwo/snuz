@@ -4,6 +4,7 @@ import { theme } from "../styles/theme";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "expo-router";
 import { Pedometer } from "expo-sensors";
+import { combineTypography } from "@/styles/typography";
 
 const REQUIRED_STEPS = 55;
 

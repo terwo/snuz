@@ -4,6 +4,7 @@ import { theme } from "../styles/theme";
 import { Audio } from "expo-av";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
+import { combineTypography } from "@/styles/typography";
 
 export default function Wake() {
   const router = useRouter();
@@ -61,8 +62,12 @@ export default function Wake() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Wakey wakey!</Text>
-        <Text style={styles.time}>7:15</Text>
+        <Text style={combineTypography(theme.typography.title, styles.title)}>
+          Wakey wakey!
+        </Text>
+        <Text style={combineTypography(theme.typography.h3, styles.time)}>
+          7:15
+        </Text>
 
         <Pressable style={styles.snoozeButton} onPress={handleSnooze}>
           <Text style={styles.snoozeText}>Hit Snooze?</Text>
@@ -91,12 +96,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: theme.spacing.md,
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
   },
   title: {
     fontSize: 36,
     color: theme.colors.text.primary,
     marginTop: theme.spacing.xl,
+    marginBottom: -100,
   },
   time: {
     fontSize: 64,
