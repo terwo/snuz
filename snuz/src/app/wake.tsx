@@ -52,9 +52,9 @@ export default function Wake() {
       if (sound) {
         await sound.stopAsync();
       }
-      router.back();
+      router.push("/snooze");
     } catch (error) {
-      console.error("Error during snooze", error);
+      console.error("Error stopping sound", error);
     }
   };
 

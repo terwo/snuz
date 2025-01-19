@@ -8,18 +8,24 @@
       "bundler": "metro"
     },
     "plugins": [
-    [
+      [
         "expo-router",
         {
-        "origin": "https://n"
+          "origin": "https://n"
         }
-    ],
-    [
+      ],
+      [
         "expo-av",
         {
-        "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
-    ]
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Allow $(PRODUCT_NAME) to access your device motion"
+        }
+      ]
     ],
     "name": "snuz",
     "slug": "snuz",
