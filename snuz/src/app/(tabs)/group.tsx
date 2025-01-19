@@ -13,7 +13,7 @@ import { registerForPushNotificationsAsync } from "../../utils/notificationConfi
 import { theme } from "../../styles/theme";
 import { combineTypography } from "../../styles/typography";
 import { router } from "expo-router";
-import { useGroup } from '../../context/group';
+import { useGroup } from "../../context/group";
 
 export default function Group() {
   const { group } = useGroup();
@@ -28,10 +28,10 @@ export default function Group() {
   }, []);
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
@@ -44,7 +44,7 @@ export default function Group() {
       <Image
         source={require("../../../assets/images/snooze_behind.png")}
         style={{
-          width: '100%',
+          width: "100%",
           height: undefined,
           aspectRatio: 1,
         }}
@@ -57,7 +57,7 @@ export default function Group() {
         </Text>
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.fab}
         onPress={() => router.push("/new-plan")}
       >
@@ -73,10 +73,15 @@ export default function Group() {
       </Text>
 
       <View style={styles.commitmentContainer}>
-        <Text style={combineTypography(theme.typography.p, styles.commitmentText)}>
-          committed with {group?.members.length ? group.members.length - 1 : 0} others
+        <Text
+          style={combineTypography(theme.typography.p, styles.commitmentText)}
+        >
+          committed with {group?.members.length ? group.members.length - 1 : 0}{" "}
+          others
         </Text>
-        <Text style={combineTypography(theme.typography.p, styles.commitmentText)}>
+        <Text
+          style={combineTypography(theme.typography.p, styles.commitmentText)}
+        >
           for {group?.days_left} days
         </Text>
       </View>
@@ -87,8 +92,15 @@ export default function Group() {
             Wake up at
           </Text>
           <View style={styles.timeValueContainer}>
-            <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {group?.wake_time ? formatTime(new Date(group.wake_time)) : '--:--'}
+            <Text
+              style={combineTypography(
+                theme.typography.timeValue,
+                styles.timeValue
+              )}
+            >
+              {group?.wake_time
+                ? formatTime(new Date(group.wake_time))
+                : "--:--"}
             </Text>
           </View>
         </View>
@@ -98,30 +110,43 @@ export default function Group() {
             Sleep at
           </Text>
           <View style={styles.timeValueContainer}>
-            <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {group?.sleep_time ? formatTime(new Date(group.sleep_time)) : '--:--'}
+            <Text
+              style={combineTypography(
+                theme.typography.timeValue,
+                styles.timeValue
+              )}
+            >
+              {group?.sleep_time
+                ? formatTime(new Date(group.sleep_time))
+                : "--:--"}
             </Text>
           </View>
         </View>
       </View>
 
       <View style={styles.rankingsContainer}>
-        <Text style={combineTypography(theme.typography.h2, styles.rankingsTitle)}>
+        <Text
+          style={combineTypography(theme.typography.h2, styles.rankingsTitle)}
+        >
           Rankings
         </Text>
         {group?.members.map((member, index) => (
-          <View key={member} style={[
-            styles.rankingRow,
-            index === 1 && styles.selectedRank
-          ]}>
+          <View
+            key={member}
+            style={[styles.rankingRow, index === 1 && styles.selectedRank]}
+          >
             <Text style={styles.rankNumber}>{index + 1}</Text>
             <View style={styles.rankAvatar}>
               <Text>🐻</Text>
             </View>
-            <Text style={combineTypography(theme.typography.p, styles.rankName)}>
+            <Text
+              style={combineTypography(theme.typography.p, styles.rankName)}
+            >
               {member}
             </Text>
-            <Text style={combineTypography(theme.typography.p, styles.rankScore)}>
+            <Text
+              style={combineTypography(theme.typography.p, styles.rankScore)}
+            >
               597
             </Text>
           </View>
@@ -148,7 +173,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.colors.text.primary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: theme.spacing.xl,
   },
   bearContainer: {
@@ -157,54 +182,54 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background.menu,
     borderRadius: 128,
     marginBottom: theme.spacing.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
   },
   bearEmoji: {
     fontSize: 36,
   },
   textContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   greeting: {
     color: theme.colors.text.primary,
     marginBottom: theme.spacing.sm,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitle: {
     color: theme.colors.text.primary,
-    textAlign: 'center',
+    textAlign: "center",
   },
   fab: {
-    position: 'absolute',
+    position: "absolute",
     bottom: theme.spacing.xl,
     right: theme.spacing.xl,
     width: 60,
     height: 60,
     borderRadius: 30,
     backgroundColor: theme.colors.accent,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
   commitmentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: theme.spacing.xl,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   commitmentText: {
     color: theme.colors.text.primary,
     marginHorizontal: theme.spacing.xs,
   },
   avatarGroup: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginHorizontal: theme.spacing.xs,
   },
   avatarCircle: {
@@ -212,29 +237,29 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     backgroundColor: theme.colors.background.menu,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 2,
     borderColor: theme.colors.background.white,
   },
   timesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     padding: 16,
     marginBottom: 24,
-    width: '100%',
+    width: "100%",
   },
   timeBlock: {
-    alignItems: 'flex-start',
-    minWidth: '40%',
+    alignItems: "flex-start",
+    minWidth: "40%",
   },
   timeLabel: {
     color: theme.colors.text.primary,
     marginBottom: theme.spacing.xs,
   },
   timeValueContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
+    flexDirection: "row",
+    alignItems: "baseline",
     gap: 8,
   },
   timeValue: {
@@ -257,8 +282,8 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   rankingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
     marginVertical: 4,
@@ -269,7 +294,7 @@ const styles = StyleSheet.create({
   },
   rankNumber: {
     width: 24,
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.colors.text.primary,
     fontSize: 16,
   },
@@ -279,8 +304,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: theme.colors.background.avatar,
     marginHorizontal: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   rankName: {
     flex: 1,

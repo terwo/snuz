@@ -56,3 +56,14 @@ export async function scheduleAlarm(selectedDate) {
   
     return true;
   }
+
+  export const testNotification = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Test Notification 🐻',
+        body: 'Your notification system is working!',
+        sound: true,
+      },
+      trigger: null,  // null means send immediately
+    });
+  };

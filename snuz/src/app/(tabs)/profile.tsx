@@ -77,7 +77,7 @@ export default function Profile() {
           <Text
             style={combineTypography(theme.typography.h2, styles.sectionTitle)}
           >
-            Friends
+            Fellow Snoozers
           </Text>
           <View style={styles.friendsContainer}>
             {/* Friend Item */}
