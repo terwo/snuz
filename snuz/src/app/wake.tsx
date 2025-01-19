@@ -7,7 +7,7 @@ import { useRouter } from "expo-router";
 
 export default function Wake() {
   const router = useRouter();
-  const [sound, setSound] = useState();
+  const [sound, setSound] = useState<Audio.Sound | undefined>();
 
   useEffect(() => {
     // Load and play the sound
