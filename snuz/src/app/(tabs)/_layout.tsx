@@ -4,7 +4,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFonts } from "../../hooks/useFonts";
 import { View, Text, StyleSheet } from "react-native";
 import { theme } from "../../styles/theme";
-import { combineTypography } from "../../styles/typography";
 
 export default function AppLayout() {
   const fontsLoaded = useFonts();
