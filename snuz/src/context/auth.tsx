@@ -15,7 +15,7 @@ const API_ROOT = "https://alvicorn-fastapi.prod1.defang.dev";
 
 async function loginUser(username: string) {
   const formData = new FormData();
-  formData.append("user_name", username);
+  formData.append("username", username);
 
   const response = await fetch(`${API_ROOT}/login`, {
     method: "POST",
@@ -31,7 +31,7 @@ async function loginUser(username: string) {
 
 async function createUser(username: string) {
   const formData = new FormData();
-  formData.append("user_name", username);
+  formData.append("username", username);
 
   const response = await fetch(`${API_ROOT}/create-user`, {
     method: "POST",

@@ -10,13 +10,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import AlarmPicker from "../../components/AlarmPicker";
-import { registerForPushNotificationsAsync } from "../../utils/notificationConfig";
+import {
+  registerForPushNotificationsAsync,
+  testNotification,
+} from "../../utils/notificationConfig";
 import { theme } from "../../styles/theme";
 import { combineTypography } from "../../styles/typography";
 
 // Dummy data for the group
 const dummyGroupData = {
-  hasAlarm: true, // Toggle this to test different states
+  hasAlarm: false, // Toggle this to test different states
   commitmentDays: 7,
   members: [
     { id: 1, name: "Jason", score: 597, avatar: "🐻" },
@@ -25,7 +28,7 @@ const dummyGroupData = {
     { id: 4, name: "Jason", score: 597, avatar: "🐻" },
   ],
   wakeUpTime: "7:15 AM",
-  sleepTime: "7:15 PM"
+  sleepTime: "7:15 PM",
 };
 
 export default function Group() {
@@ -52,7 +55,7 @@ export default function Group() {
       <Image
         source={require("../../../assets/images/snooze_behind.png")} // You'll need the actual bear illustration
         style={{
-          width: '100%',
+          width: "100%",
           height: undefined,
           aspectRatio: 1,
         }}
@@ -65,11 +68,19 @@ export default function Group() {
         </Text>
       </View>
 
-      {/* Floating Action Button */}
-      <TouchableOpacity 
-        style={styles.fab}
-        onPress={() => setShowPicker(true)}
+      <TouchableOpacity
+        style={[styles.fab, { bottom: theme.spacing.xl + 80 }]}
+        onPress={testNotification}
       >
+        <Ionicons
+          name="notifications"
+          size={30}
+          color={theme.colors.background.white}
+        />
+      </TouchableOpacity>
+
+      {/* Floating Action Button */}
+      <TouchableOpacity style={styles.fab} onPress={() => setShowPicker(true)}>
         <Ionicons name="add" size={30} color={theme.colors.background.white} />
       </TouchableOpacity>
     </View>
@@ -82,23 +93,24 @@ export default function Group() {
       </Text>
 
       <View style={styles.commitmentContainer}>
-        <Text style={combineTypography(theme.typography.p, styles.commitmentText)}>
+        <Text
+          style={combineTypography(theme.typography.p, styles.commitmentText)}
+        >
           committed with
         </Text>
         <View style={styles.avatarGroup}>
           {dummyGroupData.members.slice(0, 3).map((member, index) => (
-            <View 
-              key={member.id} 
-              style={[
-                styles.avatarCircle,
-                { marginLeft: index > 0 ? -15 : 0 }
-              ]}
+            <View
+              key={member.id}
+              style={[styles.avatarCircle, { marginLeft: index > 0 ? -15 : 0 }]}
             >
               <Text>{member.avatar}</Text>
             </View>
           ))}
         </View>
-        <Text style={combineTypography(theme.typography.p, styles.commitmentText)}>
+        <Text
+          style={combineTypography(theme.typography.p, styles.commitmentText)}
+        >
           for {dummyGroupData.commitmentDays} days
         </Text>
       </View>
@@ -109,11 +121,21 @@ export default function Group() {
             Wake up at
           </Text>
           <View style={styles.timeValueContainer}>
-            <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {dummyGroupData.wakeUpTime.split(' ')[0]}
+            <Text
+              style={combineTypography(
+                theme.typography.timeValue,
+                styles.timeValue
+              )}
+            >
+              {dummyGroupData.wakeUpTime.split(" ")[0]}
             </Text>
-            <Text style={combineTypography(theme.typography.timePeriod, styles.timePeriod)}>
-              {dummyGroupData.wakeUpTime.split(' ')[1]}
+            <Text
+              style={combineTypography(
+                theme.typography.timePeriod,
+                styles.timePeriod
+              )}
+            >
+              {dummyGroupData.wakeUpTime.split(" ")[1]}
             </Text>
           </View>
         </View>
@@ -123,33 +145,49 @@ export default function Group() {
             Sleep at
           </Text>
           <View style={styles.timeValueContainer}>
-            <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {dummyGroupData.sleepTime.split(' ')[0]}
+            <Text
+              style={combineTypography(
+                theme.typography.timeValue,
+                styles.timeValue
+              )}
+            >
+              {dummyGroupData.sleepTime.split(" ")[0]}
             </Text>
-            <Text style={combineTypography(theme.typography.timePeriod, styles.timePeriod)}>
-              {dummyGroupData.sleepTime.split(' ')[1]}
+            <Text
+              style={combineTypography(
+                theme.typography.timePeriod,
+                styles.timePeriod
+              )}
+            >
+              {dummyGroupData.sleepTime.split(" ")[1]}
             </Text>
           </View>
         </View>
       </View>
 
       <View style={styles.rankingsContainer}>
-        <Text style={combineTypography(theme.typography.h2, styles.rankingsTitle)}>
+        <Text
+          style={combineTypography(theme.typography.h2, styles.rankingsTitle)}
+        >
           Rankings
         </Text>
         {dummyGroupData.members.map((member, index) => (
-          <View key={member.id} style={[
-            styles.rankingRow,
-            index === 1 && styles.selectedRank
-          ]}>
+          <View
+            key={member.id}
+            style={[styles.rankingRow, index === 1 && styles.selectedRank]}
+          >
             <Text style={styles.rankNumber}>{index + 1}</Text>
             <View style={styles.rankAvatar}>
               <Text>{member.avatar}</Text>
             </View>
-            <Text style={combineTypography(theme.typography.p, styles.rankName)}>
+            <Text
+              style={combineTypography(theme.typography.p, styles.rankName)}
+            >
               {member.name}
             </Text>
-            <Text style={combineTypography(theme.typography.p, styles.rankScore)}>
+            <Text
+              style={combineTypography(theme.typography.p, styles.rankScore)}
+            >
               {member.score}
             </Text>
           </View>
@@ -184,7 +222,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.colors.text.primary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: theme.spacing.xl,
   },
   bearContainer: {
@@ -193,54 +231,54 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background.menu,
     borderRadius: 128,
     marginBottom: theme.spacing.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
   },
   bearEmoji: {
     fontSize: 36,
   },
   textContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   greeting: {
     color: theme.colors.text.primary,
     marginBottom: theme.spacing.sm,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitle: {
     color: theme.colors.text.primary,
-    textAlign: 'center',
+    textAlign: "center",
   },
   fab: {
-    position: 'absolute',
+    position: "absolute",
     bottom: theme.spacing.xl,
     right: theme.spacing.xl,
     width: 60,
     height: 60,
     borderRadius: 30,
     backgroundColor: theme.colors.accent,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
   commitmentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: theme.spacing.xl,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   commitmentText: {
     color: theme.colors.text.primary,
     marginHorizontal: theme.spacing.xs,
   },
   avatarGroup: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginHorizontal: theme.spacing.xs,
   },
   avatarCircle: {
@@ -248,29 +286,29 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     backgroundColor: theme.colors.background.menu,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 2,
     borderColor: theme.colors.background.white,
   },
   timesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     padding: 16,
     marginBottom: 24,
-    width: '100%',
+    width: "100%",
   },
   timeBlock: {
-    alignItems: 'flex-start',
-    minWidth: '40%',
+    alignItems: "flex-start",
+    minWidth: "40%",
   },
   timeLabel: {
     color: theme.colors.text.primary,
     marginBottom: theme.spacing.xs,
   },
   timeValueContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
+    flexDirection: "row",
+    alignItems: "baseline",
     gap: 8,
   },
   timeValue: {
@@ -293,8 +331,8 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   rankingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
     marginVertical: 4,
@@ -305,7 +343,7 @@ const styles = StyleSheet.create({
   },
   rankNumber: {
     width: 24,
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.colors.text.primary,
     fontSize: 16,
   },
@@ -315,8 +353,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: theme.colors.background.avatar,
     marginHorizontal: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   rankName: {
     flex: 1,
