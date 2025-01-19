@@ -44,7 +44,7 @@ export default function Sleep() {
   useEffect(() => {
     if (timeToAlarm <= 0) {
       // Play a transition sound if desired
-      router.push("wake");
+      router.navigate("app/wake");
     }
     const timer = setInterval(() => {
       setTimeToAlarm((prev) => Math.max(0, prev - 1));
