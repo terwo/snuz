@@ -9,12 +9,15 @@ export const theme = {
       white: '#FFFFFF',
       selected: '#FFFFFF',
       avatar: '#EEEDEC',
+      outline: '#D2D2D2',
     },
     text: {
       primary: '#4B361F',
-      accent: '#1D68CF',
+      accent: '#CF1D1D',
+      disabled: '#D2D2D2'
     },
-    accent: '#1D68CF',
+    accent: '#CF1D1D',
+    disabled: '#D2D2D2'
   },
   spacing: {
     xs: 4,

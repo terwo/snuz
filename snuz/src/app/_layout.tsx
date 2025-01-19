@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { useFonts } from "../hooks/useFonts";
 import { View, Text, StyleSheet } from "react-native";
 import { theme } from "../styles/theme";
+import { GroupProvider } from "../context/group";
 import { AuthProvider } from "../context/auth";
 
 export default function RootLayout() {
@@ -18,10 +19,12 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
+      <GroupProvider>
       <Stack screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="index" /> */}
+        <Stack.Screen name="index" />
         <Stack.Screen name="(tabs)" />
       </Stack>
+      </GroupProvider>
     </AuthProvider>
   );
 }

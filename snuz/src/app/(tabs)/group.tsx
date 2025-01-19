@@ -9,48 +9,40 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import AlarmPicker from "../../components/AlarmPicker";
 import { registerForPushNotificationsAsync } from "../../utils/notificationConfig";
 import { theme } from "../../styles/theme";
 import { combineTypography } from "../../styles/typography";
-
-// Dummy data for the group
-const dummyGroupData = {
-  hasAlarm: true, // Toggle this to test different states
-  commitmentDays: 7,
-  members: [
-    { id: 1, name: "Jason", score: 597, avatar: "🐻" },
-    { id: 2, name: "Jason", score: 597, avatar: "🐻" },
-    { id: 3, name: "Jason", score: 597, avatar: "🐻" },
-    { id: 4, name: "Jason", score: 597, avatar: "🐻" },
-  ],
-  wakeUpTime: "7:15 AM",
-  sleepTime: "7:15 PM"
-};
+import { router } from "expo-router";
+import { useGroup } from '../../context/group';
 
 export default function Group() {
-  const [showPicker, setShowPicker] = useState(false);
+  const { group } = useGroup();
   const [permission, setPermission] = useState(false);
 
   useEffect(() => {
     async function setupNotifications() {
-      const hasPermission = await registerForPushNotificationsAsync();
-      setPermission(hasPermission);
+      const permission = await registerForPushNotificationsAsync();
+      setPermission(permission);
     }
     setupNotifications();
   }, []);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
 
   const renderNoAlarmState = () => (
     <View style={styles.content}>
       <Text style={combineTypography(theme.typography.title, styles.title)}>
         Sleep Plan
       </Text>
-      {/* <View style={styles.bearContainer}>
-        <Text style={styles.bearEmoji}>🐻</Text>
-      </View> */}
 
       <Image
-        source={require("../../../assets/images/snooze_behind.png")} // You'll need the actual bear illustration
+        source={require("../../../assets/images/snooze_behind.png")}
         style={{
           width: '100%',
           height: undefined,
@@ -65,10 +57,9 @@ export default function Group() {
         </Text>
       </View>
 
-      {/* Floating Action Button */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => setShowPicker(true)}
+        onPress={() => router.push("/new-plan")}
       >
         <Ionicons name="add" size={30} color={theme.colors.background.white} />
       </TouchableOpacity>
@@ -83,23 +74,10 @@ export default function Group() {
 
       <View style={styles.commitmentContainer}>
         <Text style={combineTypography(theme.typography.p, styles.commitmentText)}>
-          committed with
+          committed with {group?.members.length ? group.members.length - 1 : 0} others
         </Text>
-        <View style={styles.avatarGroup}>
-          {dummyGroupData.members.slice(0, 3).map((member, index) => (
-            <View 
-              key={member.id} 
-              style={[
-                styles.avatarCircle,
-                { marginLeft: index > 0 ? -15 : 0 }
-              ]}
-            >
-              <Text>{member.avatar}</Text>
-            </View>
-          ))}
-        </View>
         <Text style={combineTypography(theme.typography.p, styles.commitmentText)}>
-          for {dummyGroupData.commitmentDays} days
+          for {group?.days_left} days
         </Text>
       </View>
 
@@ -110,10 +88,7 @@ export default function Group() {
           </Text>
           <View style={styles.timeValueContainer}>
             <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {dummyGroupData.wakeUpTime.split(' ')[0]}
-            </Text>
-            <Text style={combineTypography(theme.typography.timePeriod, styles.timePeriod)}>
-              {dummyGroupData.wakeUpTime.split(' ')[1]}
+              {group?.wake_time ? formatTime(new Date(group.wake_time)) : '--:--'}
             </Text>
           </View>
         </View>
@@ -124,10 +99,7 @@ export default function Group() {
           </Text>
           <View style={styles.timeValueContainer}>
             <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {dummyGroupData.sleepTime.split(' ')[0]}
-            </Text>
-            <Text style={combineTypography(theme.typography.timePeriod, styles.timePeriod)}>
-              {dummyGroupData.sleepTime.split(' ')[1]}
+              {group?.sleep_time ? formatTime(new Date(group.sleep_time)) : '--:--'}
             </Text>
           </View>
         </View>
@@ -137,20 +109,20 @@ export default function Group() {
         <Text style={combineTypography(theme.typography.h2, styles.rankingsTitle)}>
           Rankings
         </Text>
-        {dummyGroupData.members.map((member, index) => (
-          <View key={member.id} style={[
+        {group?.members.map((member, index) => (
+          <View key={member} style={[
             styles.rankingRow,
             index === 1 && styles.selectedRank
           ]}>
             <Text style={styles.rankNumber}>{index + 1}</Text>
             <View style={styles.rankAvatar}>
-              <Text>{member.avatar}</Text>
+              <Text>🐻</Text>
             </View>
             <Text style={combineTypography(theme.typography.p, styles.rankName)}>
-              {member.name}
+              {member}
             </Text>
             <Text style={combineTypography(theme.typography.p, styles.rankScore)}>
-              {member.score}
+              597
             </Text>
           </View>
         ))}
@@ -160,15 +132,7 @@ export default function Group() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {dummyGroupData.hasAlarm ? renderAlarmState() : renderNoAlarmState()}
-
-      {/* Time Picker Modal */}
-      {showPicker && (
-        <AlarmPicker
-          visible={showPicker}
-          onClose={() => setShowPicker(false)}
-        />
-      )}
+      {group ? renderAlarmState() : renderNoAlarmState()}
     </SafeAreaView>
   );
 }
