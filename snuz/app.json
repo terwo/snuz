@@ -8,15 +8,30 @@
       "bundler": "metro"
     },
     "plugins": [
-      [
+    [
         "expo-router",
         {
-          "origin": "https://n"
+        "origin": "https://n"
         }
-      ],
-      "expo-audio"
+    ],
+    [
+        "expo-audio",
+        {
+        "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+        }
+    ]
     ],
     "name": "snuz",
-    "slug": "snuz"
+    "slug": "snuz",
+    "android": {
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ],
+      "package": "com.anonymous.snuz"
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.snuz"
+    }
   }
 }
