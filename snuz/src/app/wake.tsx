@@ -1,37 +1,61 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../styles/theme";
-import { useAudioPlayer } from "expo-audio";
-import { useEffect } from "react";
+import { Audio } from "expo-av";
+import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 
 export default function Wake() {
   const router = useRouter();
-  // Create an audio player instance with the alarm sound
-  const player = useAudioPlayer(require("../../assets/audio/bear_roar.mp3"));
+  const [sound, setSound] = useState();
 
   useEffect(() => {
-    // Start playing as soon as the screen loads
-    player.play();
-    // Set it to loop
-    player.loop = true;
+    // Load and play the sound
+    async function loadSound() {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require("../../assets/audio/bear_roar.mp3"),
+          {
+            isLooping: true,
+            shouldPlay: true,
+          }
+        );
+        setSound(sound);
+      } catch (error) {
+        console.error("Error loading sound", error);
+      }
+    }
 
+    loadSound();
+
+    // Cleanup
     return () => {
-      // Cleanup when component unmounts
-      player.remove();
+      if (sound) {
+        sound.unloadAsync();
+      }
     };
   }, []);
 
   const handleStop = async () => {
-    await player.pause();
-    // Navigate to game or verification screen
-    router.push("/verify");
+    try {
+      if (sound) {
+        await sound.stopAsync();
+      }
+      router.push("/verify");
+    } catch (error) {
+      console.error("Error stopping sound", error);
+    }
   };
 
   const handleSnooze = async () => {
-    await player.pause();
-    // Add snooze logic here - maybe go back with a new timer
-    router.back();
+    try {
+      if (sound) {
+        await sound.stopAsync();
+      }
+      router.back();
+    } catch (error) {
+      console.error("Error during snooze", error);
+    }
   };
 
   return (
