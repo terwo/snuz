@@ -1,6 +1,6 @@
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
-
+# FROM huggingface/transformers-pytorch-cpu:latest
 # Set the working directory to /app
 WORKDIR /app
 
@@ -10,6 +10,7 @@ RUN apt-get update -qq \
       build-essential \
       python3-dev \
       ca-certificates \
+      libpq-dev gcc \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/*
 

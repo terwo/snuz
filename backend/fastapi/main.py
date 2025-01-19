@@ -15,14 +15,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, String, Table, Time, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, joinedload
 from supabase import create_client, Client
+
+# from transformers import pipeline
+
 
 MAX_SCORE = 100
 MIN_SCORE = 0
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
+# summarizer = pipeline("summarization", model="t5-small")
 
 
 ##################
@@ -167,7 +171,7 @@ async def all_user_data():
                 "message": "user found",
                 "username": user.username,
                 "owns_a_group": user.owns_a_group,
-                "group_id": user.group_id,
+                "group_id": None if not user.groups else user.groups[0].group_id,
                 "score": user.score,
                 "average_minutes_slept": user.average_minutes_slept,
                 "is_asleep": user.is_asleep,
@@ -186,11 +190,12 @@ async def user(username: str = Form(...)):
     with SessionLocal() as db:
         if (user := find_user(db, username)) is None:
             raise HTTPException(status_code=500, detail=f"User does not exist: {username}")
+            
     return {
         "message": "user found",
         "username": user.username,
         "owns_a_group": user.owns_a_group,
-        "group_id": user.group_id,
+        "group_id": None if not user.groups else user.groups[0].group_id,
         "score": user.score,
         "average_minutes_slept": user.average_minutes_slept,
         "is_asleep": user.is_asleep,
@@ -245,21 +250,29 @@ async def to_awake(username: str = Form(...)):
             user.is_asleep = False    
             user.last_awake_time = dt.datetime.now(dt.timezone.utc)
         
-            today_minutes_slept = int((user.last_awake_time - user.last_sleep_time.replace(tzinfo=dt.timezone.utc)).total_seconds() // 60)
+            to_sleep_goal = user.groups[0].to_sleep_time.replace(tzinfo=dt.timezone.utc)
+            to_awake_goal = user.groups[0].to_wake_up_time.replace(tzinfo=dt.timezone.utc)
+            
+            last_sleep_time = user.last_sleep_time.replace(tzinfo=dt.timezone.utc)
+            today_minutes_slept = int((user.last_awake_time - last_sleep_time).total_seconds() // 60)
             
             if user.average_minutes_slept is None:
                 user.average_minutes_slept = today_minutes_slept
             else:
                 user.average_minutes_slept = (user.average_minutes_slept + today_minutes_slept) // 2 
             
-            diff = today_minutes_slept - user.average_minutes_slept # if positive, slept more than avg. if negative, slept less than avg. 
-            user.score = min(max(math.ceil(user.score + (diff * 0.2 * user.current_snooze_counter)), MIN_SCORE), MAX_SCORE)
+            minutes_slept_diff = today_minutes_slept - user.average_minutes_slept # if positive, slept more than avg. if negative, slept less than avg. 
+            to_sleep_diff = int((to_sleep_goal - last_sleep_time).total_seconds() // (60 * 5))
+            to_awake_diff = int((user.last_awake_time - to_awake_goal).total_seconds() // (60 * 5))
+            diff_summary = minutes_slept_diff + to_sleep_diff + to_awake_diff
+            
+            user.score = min(max(math.floor(user.score + (diff_summary * 0.2) - user.current_snooze_counter), MIN_SCORE), MAX_SCORE)    
             user.current_snooze_counter = 0
         
             db.commit()
         except Exception as e:
             db.rollback()
-            raise HTTPException(status_code=500, detail=f"Failed to mark user as awake: {username}")
+            raise HTTPException(status_code=500, detail=f"Failed to mark user as awake: {username}: {e}")
     
 
         # check if anyone else is awake
@@ -330,11 +343,19 @@ async def to_snooze(username: str = Form(...)):
             db.rollback()
             raise HTTPException(status_code=500, detail=f"Failed increment snooze counter: {username}")
     
+        # result = summarizer(
+        #     f"{user.username} let down their team by hit snooze at {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)}"
+        #     max_length=30,
+        #     min_length=10,
+        #     do_sample=f"{user.username} let down their team by hit snooze at {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)}",
+        # )
+        result = [{"summary_text": "failure"}]
+    
         await group_websockets[user.groups[0].group_id].broadcast(BroadcastMessage(
             "to-snooze",
             user.username,
             {
-                "message": f"{user.username} hit snooze at {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)}",
+                "message": result[0]["summary_text"],
             }
         ))
     return {"message": f"{username} has hit snooze {user.current_snooze_counter} times in a row"}
@@ -429,7 +450,7 @@ async def create_group(create_group_data: CreateGroupData):
         
     return {"message": "Group created successfully"}
 
-@app.get("/my-group")
+@app.post("/my-group")
 async def my_group(username: str = Form(...)):
     with SessionLocal() as db:
         if (user := find_user(db, username)) is None:
@@ -527,24 +548,6 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
 
 
 def find_user(db: sessionmaker, username: str) -> Optional[UserModel]:
-    return db.query(UserModel).filter(UserModel.username == username).first()
+    return db.query(UserModel).options(joinedload(UserModel.groups)).filter(UserModel.username == username).first()
 
 
-def scoring_system(user: UserModel):
-    to_sleep_goal = user.groups[0].to_sleep_time
-    to_awake_goal = user.groups[0].to_wake_up_time
-    
-    
-    last_sleep_time = user.last_sleep_time.replace(tzinfo=dt.timezone.now())
-    today_minutes_slept = int ((user.last_awake_time - last_sleep_time).total_seconds() // 60)
-    
-    if user.average_minutes_slept is None:
-        user.average_minutes_slept = today_minutes_slept
-    else:
-        user.average_minutes_slept = (user.average_minutes_slept + today_minutes_slept) // 2 
-    
-    minutes_slept_diff = today_minutes_slept - user.average_minutes_slept # if positive, slept more than avg. if negative, slept less than avg. 
-    to_sleep_diff = abs(to_sleep_goal - last_sleep_time)
-    
-    
-    user.score = min(max(math.ceil(user.score + (diff * 0.2 * user.current_snooze_counter)), MIN_SCORE), MAX_SCORE)
