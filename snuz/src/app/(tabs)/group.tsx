@@ -14,9 +14,11 @@ import { theme } from "../../styles/theme";
 import { combineTypography } from "../../styles/typography";
 import { router } from "expo-router";
 import { useGroup } from '../../context/group';
+import { useAuth } from '../../context/auth';
 
 export default function Group() {
   const { group } = useGroup();
+  const { username } = useAuth();
   const [permission, setPermission] = useState(false);
 
   useEffect(() => {
@@ -27,13 +29,26 @@ export default function Group() {
     setupNotifications();
   }, []);
 
+  // Split time formatting function
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
+    const timeStr = date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true
     });
+    
+    // Split the time string into time and period (AM/PM)
+    const [time, period] = timeStr.split(' ');
+    return { time, period };
   };
+
+  // Update the time display in renderAlarmState
+  const renderTimeValue = (timestamp: string | undefined) => {
+    if (!timestamp) return { time: '--:--', period: '' };
+    return formatTime(new Date(timestamp));
+  };
+
+  
 
   const renderNoAlarmState = () => (
     <View style={styles.content}>
@@ -88,7 +103,10 @@ export default function Group() {
           </Text>
           <View style={styles.timeValueContainer}>
             <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {group?.wake_time ? formatTime(new Date(group.wake_time)) : '--:--'}
+              {renderTimeValue(group?.wake_time).time}
+            </Text>
+            <Text style={[combineTypography(theme.typography.timeValue, styles.timeValue), styles.timePeriod]}>
+              {renderTimeValue(group?.wake_time).period}
             </Text>
           </View>
         </View>
@@ -99,7 +117,10 @@ export default function Group() {
           </Text>
           <View style={styles.timeValueContainer}>
             <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {group?.sleep_time ? formatTime(new Date(group.sleep_time)) : '--:--'}
+              {renderTimeValue(group?.sleep_time).time}
+            </Text>
+            <Text style={[combineTypography(theme.typography.timeValue, styles.timeValue), styles.timePeriod]}>
+              {renderTimeValue(group?.sleep_time).period}
             </Text>
           </View>
         </View>
@@ -112,7 +133,7 @@ export default function Group() {
         {group?.members.map((member, index) => (
           <View key={member} style={[
             styles.rankingRow,
-            index === 1 && styles.selectedRank
+            member === username && styles.selectedRank
           ]}>
             <Text style={styles.rankNumber}>{index + 1}</Text>
             <View style={styles.rankAvatar}>
@@ -239,10 +260,13 @@ const styles = StyleSheet.create({
   },
   timeValue: {
     color: theme.colors.text.primary,
+    fontSize: 32,
   },
   timePeriod: {
-    color: theme.colors.text.primary,
-    marginBottom: 0,
+    fontSize: 16,
+    marginLeft: 4,
+    alignSelf: 'flex-end',
+    marginBottom: 4,
   },
   rankingsContainer: {
     backgroundColor: theme.colors.background.menu,

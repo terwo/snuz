@@ -1,16 +1,19 @@
 // app/index.tsx
 import { View, Text, StyleSheet, Image } from "react-native"; // Import the Image component
+import { useAuth } from '../../context/auth';
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../../styles/theme";
 import { combineTypography } from "../../styles/typography";
 
 export default function Home() {
+  const { username } = useAuth(); // Get the authenticated username
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={combineTypography(theme.typography.title, styles.title)}>
-          Mornin' Nina!
+          Mornin' {username}!
         </Text>
 
         <View style={styles.mainContent}>
@@ -19,7 +22,6 @@ export default function Home() {
           </Text>
           <Text style={styles.timer}>00:00:00</Text>
 
-          {/* Replace the bear container with just the image */}
           <Image
             source={require("../../../assets/images/snooze.png")} // You'll need the actual bear illustration
             style={styles.bearImage}
