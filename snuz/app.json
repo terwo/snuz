@@ -13,7 +13,8 @@
         {
           "origin": "https://n"
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "name": "snuz",
     "slug": "snuz"
