@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Platform, Image } from 'react-native';
 import { router } from 'expo-router';
 import { theme } from '../styles/theme';
 import { combineTypography } from '../styles/typography';
@@ -9,32 +9,42 @@ import Checkbox from '../components/Checkbox';
 import UserRow from '../components/UserRow';
 import { useGroup } from '../context/group';
 import { useAuth } from '../context/auth';
-
-// Temporary mock data
-const mockUsers = [
-  { id: 1, name: 'Jason', username: 'jason1', avatar: require('../../assets/images/avatar.png') },
-  { id: 2, name: 'Jason', username: 'jason2', avatar: require('../../assets/images/avatar.png') },
-  { id: 3, name: 'Jason', username: 'jason3', avatar: require('../../assets/images/avatar.png') },
-  { id: 4, name: 'Jason', username: 'jason4', avatar: require('../../assets/images/avatar.png') },
-  { id: 5, name: 'Jason', username: 'jason5', avatar: require('../../assets/images/avatar.png') },
-  { id: 6, name: 'Jason', username: 'jason6', avatar: require('../../assets/images/avatar.png') },
-];
+import { useUser } from '../context/user';
 
 export default function NewPlan() {
   const { createGroup } = useGroup();
   const { username } = useAuth();
+  const { users, getAllUsers } = useUser();
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   const [currentStep, setCurrentStep] = useState<'time' | 'people'>('time');
   const [wakeUpTime, setWakeUpTime] = useState(new Date());
   const [sleepTime, setSleepTime] = useState(new Date());
   const [showWakeUpPicker, setShowWakeUpPicker] = useState(false);
   const [showSleepPicker, setShowSleepPicker] = useState(false);
-  const [snoozeGoal, setSnoozeGoal] = useState('0');
   const [planDuration, setPlanDuration] = useState('7');
   const [sendReminder, setSendReminder] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
+  // Fetch all users when component mounts
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        await getAllUsers();
+      } catch (error) {
+        setError('Failed to load users. Please try again.');
+        console.error('Error loading users:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []); // Only run on mount
 
   const handleCreatePlan = async () => {
     if (!username) {
@@ -49,9 +59,7 @@ export default function NewPlan() {
       // Get all selected usernames (including current user)
       const selectedMembers = [
         username, // Current user
-        ...mockUsers
-          .filter(user => selectedUsers.includes(user.id))
-          .map(user => user.username)
+        ...selectedUsers
       ];
 
       // Convert local times to UTC strings
@@ -76,11 +84,11 @@ export default function NewPlan() {
     }
   };
 
-  const toggleUserSelection = (userId: number) => {
+  const toggleUserSelection = (selectedUsername: string) => {
     setSelectedUsers(prev => 
-      prev.includes(userId)
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId]
+      prev.includes(selectedUsername)
+        ? prev.filter(u => u !== selectedUsername)
+        : [...prev, selectedUsername]
     );
   };
 
@@ -90,7 +98,7 @@ export default function NewPlan() {
         Sleep Plan
       </Text>
       <Text style={[combineTypography(theme.typography.p)[0], styles.subtitle]}>
-        Set up the your new sleep schedule
+        Set up your new sleep schedule
       </Text>
 
       <Input
@@ -101,14 +109,6 @@ export default function NewPlan() {
         showPicker={showWakeUpPicker}
         onPress={() => setShowWakeUpPicker(true)}
         onPickerDismiss={() => setShowWakeUpPicker(false)}
-      />
-
-      <Input
-        type="number"
-        label="Snooze goal"
-        value={snoozeGoal}
-        onChangeText={setSnoozeGoal}
-        suffix="times or less"
       />
 
       <Input
@@ -138,34 +138,57 @@ export default function NewPlan() {
     </>
   );
 
-  const renderPeopleSelection = () => (
+  const renderPeopleSetup = () => (
     <>
       <Text style={combineTypography(theme.typography.title, styles.title)}>
-        New Plan
+        Add People
       </Text>
       <Text style={[combineTypography(theme.typography.p)[0], styles.subtitle]}>
-        Add at least 1 friend to do this plan together
+        Select people to join your sleep plan
       </Text>
 
-      <Text style={styles.sectionTitle}>Add people</Text>
-      
-      <ScrollView style={styles.userList}>
-        {mockUsers.map(user => (
-          <UserRow
-            key={user.id}
-            user={user}
-            selected={selectedUsers.includes(user.id)}
-            onPress={() => toggleUserSelection(user.id)}
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <Text>Loading users...</Text>
+        </View>
+      ) : error ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <Button 
+            title="Retry" 
+            onPress={() => getAllUsers()} 
+            variant="secondary"
           />
-        ))}
-      </ScrollView>
+        </View>
+      ) : users.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text>No users available to add</Text>
+        </View>
+      ) : (
+        <ScrollView style={styles.userList}>
+          {users
+            .filter(user => user.username !== username) // Filter out current user
+            .map((user, index) => (
+              <UserRow
+                key={user.username}
+                user={{
+                  id: index + 1,
+                  name: user.username,
+                  avatar: require('../../assets/images/avatar.png')
+                }}
+                selected={selectedUsers.includes(user.username)}
+                onPress={() => toggleUserSelection(user.username)}
+              />
+            ))}
+        </ScrollView>
+      )}
     </>
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {currentStep === 'time' ? renderTimeSetup() : renderPeopleSelection()}
+        {currentStep === 'time' ? renderTimeSetup() : renderPeopleSetup()}
       </View>
 
       <View style={styles.buttonContainer}>
@@ -234,6 +257,29 @@ const styles = StyleSheet.create({
   },
   userList: {
     flex: 1,
+    marginTop: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  errorText: {
+    color: theme.colors.text.primary,
+    marginBottom: 10,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
   },
   buttonContainer: {
     flexDirection: 'row',

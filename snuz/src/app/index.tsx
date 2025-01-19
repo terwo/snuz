@@ -42,7 +42,7 @@ export default function Welcome() {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={combineTypography(theme.typography.title, styles.title)}>
-          This is Snooze
+          This is Snuz
         </Text>
 
         <Text style={combineTypography(theme.typography.h2, styles.subtitle)}>

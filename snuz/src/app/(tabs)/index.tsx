@@ -1,16 +1,32 @@
-// app/index.tsx
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../../styles/theme";
 import { combineTypography } from "../../styles/typography";
 import { useAuth } from "../../context/auth";
+import { useGroup } from "../../context/group";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const { username } = useAuth();
+  const { group, getGroup } = useGroup();
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState(15);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGroupData = async () => {
+      try {
+        await getGroup(username);
+      } catch (error) {
+        console.error('Failed to fetch group data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchGroupData();
+  }, [username, getGroup]);
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -35,6 +51,48 @@ export default function Home() {
   const goToSleep = () => {
     router.push("/sleep");
   };
+
+  const createNewPlan = () => {
+    router.push("/group");
+  };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.content}>
+          <Text>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!group) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.content}>
+          <Text style={combineTypography(theme.typography.title, styles.title)}>
+            Hi {username}!
+          </Text>
+
+          <View style={styles.welcomeContent}>
+            <Text style={styles.welcomeText}>
+              My name's Snooze, nice to meet you. Let's get you set up with a sleep plan :p
+            </Text>
+
+            <Image
+              source={require("../../../assets/images/snooze.png")}
+              style={styles.welcomeBearImage}
+              resizeMode="contain"
+            />
+
+            <Pressable style={styles.createPlanButton} onPress={createNewPlan}>
+              <Text style={styles.createPlanButtonText}>Create New Plan</Text>
+            </Pressable>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,6 +136,37 @@ const styles = StyleSheet.create({
   title: {
     color: theme.colors.text.primary,
     textAlign: "center",
+    marginBottom: theme.spacing.lg,
+  },
+  welcomeContent: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: theme.spacing.md,
+  },
+  welcomeText: {
+    textAlign: "center",
+    color: theme.colors.text.primary,
+    fontSize: 16,
+    marginBottom: theme.spacing.xl,
+  },
+  welcomeBearImage: {
+    width: "80%",
+    height: undefined,
+    aspectRatio: 1,
+    marginBottom: theme.spacing.xl,
+  },
+  createPlanButton: {
+    // backgroundColor: theme.colors.primary.main,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: 25,
+    marginTop: "auto",
+  },
+  createPlanButtonText: {
+    // color: theme.colors.text.white,
+    fontSize: 16,
+    fontWeight: "600",
   },
   mainContent: {
     flex: 1,
