@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { theme } from '../styles/theme';
+import { combineTypography } from '../styles/typography';
 
 export default function Profile() {
   return (
@@ -18,29 +20,45 @@ export default function Profile() {
           <View style={styles.avatarContainer}>
             <Text style={styles.avatarEmoji}>🐻</Text>
           </View>
-          <Text style={styles.profileName}>Franklin</Text>
-          <Text style={styles.profileSubtext}>Sleeping since 2024</Text>
+          <Text style={combineTypography(theme.typography.h1, styles.profileName)}>
+            Franklin
+          </Text>
+          <Text style={combineTypography(theme.typography.p, styles.profileSubtext)}>
+            Sleeping since 2024
+          </Text>
         </View>
 
         {/* Stats */}
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>5</Text>
-            <Text style={styles.statLabel}>Day Streak</Text>
+            <Text style={combineTypography(theme.typography.h1, styles.statNumber)}>5</Text>
+            <Text style={combineTypography(theme.typography.p, styles.statLabel)}>
+              Day Streak
+            </Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>8h 12m</Text>
-            <Text style={styles.statLabel}>Avg Sleep</Text>
+            <Text style={combineTypography(theme.typography.h1, styles.statNumber)}>
+              8h 12m
+            </Text>
+            <Text style={combineTypography(theme.typography.p, styles.statLabel)}>
+              Avg Sleep
+            </Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>92%</Text>
-            <Text style={styles.statLabel}>Consistency</Text>
+            <Text style={combineTypography(theme.typography.h1, styles.statNumber)}>
+              92%
+            </Text>
+            <Text style={combineTypography(theme.typography.p, styles.statLabel)}>
+              Consistency
+            </Text>
           </View>
         </View>
 
         {/* Friends List */}
         <View style={styles.friendsSection}>
-          <Text style={styles.sectionTitle}>Friends</Text>
+          <Text style={combineTypography(theme.typography.h2, styles.sectionTitle)}>
+            Friends
+          </Text>
           <View style={styles.friendsContainer}>
             {/* Friend Item */}
             <TouchableOpacity style={styles.friendItem}>
@@ -48,12 +66,15 @@ export default function Profile() {
                 <Text>🐻</Text>
               </View>
               <View style={styles.friendInfo}>
-                <Text style={styles.friendName}>Mike</Text>
-                <Text style={styles.friendStreak}>3 day streak</Text>
+                <Text style={combineTypography(theme.typography.h3, styles.friendName)}>
+                  Mike
+                </Text>
+                <Text style={combineTypography(theme.typography.p, styles.friendStatus)}>
+                  Sleeping 😴
+                </Text>
               </View>
-              <Ionicons name="chevron-forward" size={24} color="gray" />
+              <Ionicons name="chevron-forward" size={24} color={theme.colors.text.primary} />
             </TouchableOpacity>
-            {/* Add more friends similarly */}
           </View>
         </View>
       </ScrollView>
@@ -64,91 +85,89 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0f172a", // bg-slate-900
+    backgroundColor: theme.colors.background.main,
   },
   scrollView: {
     flex: 1,
   },
   profileHeader: {
-    padding: 16, // p-4
-    alignItems: "center",
+    alignItems: 'center',
+    padding: theme.spacing.xl,
   },
   avatarContainer: {
-    width: 96, // w-24
-    height: 96, // h-24
-    backgroundColor: "#1e293b", // bg-slate-800
-    borderRadius: 48, // rounded-full (half of width/height)
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16, // mb-4
+    width: 120,
+    height: 120,
+    backgroundColor: theme.colors.background.menu,
+    borderRadius: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: theme.spacing.md,
   },
   avatarEmoji: {
-    fontSize: 36, // text-4xl
+    fontSize: 48,
   },
   profileName: {
-    color: "white",
-    fontSize: 20, // text-xl
-    fontWeight: "bold",
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.xs,
   },
   profileSubtext: {
-    color: "#9ca3af", // text-gray-400
+    color: theme.colors.text.primary,
   },
   statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 16, // p-4
-    backgroundColor: "#1e293b", // bg-slate-800
-    marginHorizontal: 16, // mx-4
-    borderRadius: 12, // rounded-xl
-    marginBottom: 16, // mb-4
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: theme.spacing.lg,
+    backgroundColor: theme.colors.background.menu,
+    marginHorizontal: theme.spacing.md,
+    borderRadius: 16,
+    marginBottom: theme.spacing.xl,
   },
   statItem: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   statNumber: {
-    color: "white",
-    fontSize: 20, // text-xl
-    fontWeight: "bold",
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.xs,
   },
   statLabel: {
-    color: "#9ca3af", // text-gray-400
+    color: theme.colors.text.primary,
   },
   friendsSection: {
-    padding: 16, // p-4
+    padding: theme.spacing.md,
   },
   sectionTitle: {
-    color: "white",
-    fontSize: 18, // text-lg
-    fontWeight: "bold",
-    marginBottom: 8, // mb-2
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.md,
   },
   friendsContainer: {
-    backgroundColor: "#1e293b", // bg-slate-800
-    borderRadius: 12, // rounded-xl
+    backgroundColor: theme.colors.background.menu,
+    borderRadius: 16,
+    overflow: 'hidden',
   },
   friendItem: {
-    padding: 16, // p-4
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: theme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: "#334155", // border-slate-700
+    borderBottomColor: theme.colors.background.main,
   },
   friendAvatar: {
-    width: 40, // w-10
-    height: 40, // h-10
-    backgroundColor: "#3b82f6", // bg-blue-500
-    borderRadius: 20, // rounded-full
-    alignItems: "center",
-    justifyContent: "center",
+    width: 40,
+    height: 40,
+    backgroundColor: theme.colors.accent,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: theme.spacing.sm,
   },
   friendInfo: {
-    marginLeft: 12, // ml-3
     flex: 1,
   },
   friendName: {
-    color: "white",
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.xs,
   },
-  friendStreak: {
-    color: "#9ca3af", // text-gray-400
+  friendStatus: {
+    color: theme.colors.text.primary,
   },
 });

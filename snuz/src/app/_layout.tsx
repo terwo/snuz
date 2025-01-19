@@ -3,6 +3,8 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts } from "../hooks/useFonts";
 import { View, Text, StyleSheet } from "react-native";
+import { theme } from '../styles/theme';
+import { combineTypography } from '../styles/typography';
 
 export default function AppLayout() {
   const fontsLoaded = useFonts();
@@ -19,13 +21,14 @@ export default function AppLayout() {
     <Tabs
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#1e293b",
+          backgroundColor: theme.colors.background.menu,
         },
-        headerTintColor: "#fff",
+        headerTintColor: theme.colors.text.primary,
         tabBarStyle: {
-          backgroundColor: "#1e293b",
+          backgroundColor: theme.colors.background.menu,
         },
-        tabBarActiveTintColor: "#3b82f6",
+        tabBarActiveTintColor: theme.colors.accent,
+        tabBarInactiveTintColor: theme.colors.text.primary,
       }}
     >
       <Tabs.Screen
@@ -76,9 +79,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1e293b',
+    backgroundColor: theme.colors.background.main,
   },
   loadingText: {
-    color: '#ffffff',
+    color: theme.colors.text.primary,
   }
 });
