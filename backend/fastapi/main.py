@@ -16,9 +16,8 @@ from pydantic import BaseModel
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, String, Table, Time, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, joinedload
-from supabase import create_client, Client
 
-# from transformers import pipeline
+from transformers import pipeline
 
 
 MAX_SCORE = 100
@@ -26,7 +25,7 @@ MIN_SCORE = 0
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
-# summarizer = pipeline("summarization", model="t5-small")
+generator = pipeline('text-generation', model='gpt2')
 
 
 ##################
@@ -80,10 +79,6 @@ DATABASE_URL = f"postgresql+psycopg2://{user}:{password}@{host}:5432/{dbname}?ss
 engine = create_engine(DATABASE_URL, echo=True)
 Base.metadata.create_all(bind=engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-supabase_url = os.getenv("supabase_url")
-anon_key = os.getenv("anon_key")
-supabase: Client = create_client(supabase_url, anon_key)
 
 # test the connection
 try:
@@ -226,14 +221,20 @@ async def to_sleep(username: str = Form(...)):
             db.rollback()
             raise HTTPException(status_code=500, detail=f"Failed to mark user as sleeping: {username}")
     
+        prompt = f"{user.username} went to sleep at {user.last_sleep_time}",
+        result = result = generator(prompt, max_new_tokens=25, num_return_sequences=1)
+        message = result[0]["generated_text"]
+       
         await group_websockets[user.groups[0].group_id].broadcast(BroadcastMessage(
             "to-sleep",
             user.username,
             {
-                "message": f"{user.username} went to sleep at {user.last_sleep_time}"
+                "message": message,
+                "asleep": [u.username for u in user.groups[0].users if u.is_asleep]
             }
         ))
     
+        return {"message": message}
     return {"message": f"User marked as sleeping: {username}"}
 
 @app.post("/to-awake")
@@ -312,12 +313,18 @@ async def to_awake(username: str = Form(...)):
                 raise HTTPException(status_code=500, detail=f"Failed to update group data: {username}: {e}")         
         # else:
             # TODO: oversleeping penelty
+       
+        prompt = f"{user.username} woke up at {user.last_awake_time}",
+        result = result = generator(prompt, max_new_tokens=25, num_return_sequences=1)
+        message = result[0]["generated_text"]
+       
         
         await group_websockets[user.groups[0].group_id].broadcast(BroadcastMessage(
             "to-awake",
             user.username,
             {
-                "message": f"{user.username} woke up at {user.last_awake_time}"
+                "message": message,
+                "awake": [u.username for u in user.groups[0].users if not u.is_asleep]
             }
         ))
         
@@ -325,6 +332,7 @@ async def to_awake(username: str = Form(...)):
         if group_socket:
                 del group_websockets[group_websockets]
     
+        return {"message": message}
     return {"message": f"User marked as awake: {username}"}
 
 @app.post("/to-snooze")
@@ -342,23 +350,23 @@ async def to_snooze(username: str = Form(...)):
         except Exception as e:
             db.rollback()
             raise HTTPException(status_code=500, detail=f"Failed increment snooze counter: {username}")
-    
-        # result = summarizer(
-        #     f"{user.username} let down their team by hit snooze at {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)}"
-        #     max_length=30,
-        #     min_length=10,
-        #     do_sample=f"{user.username} let down their team by hit snooze at {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)}",
-        # )
-        result = [{"summary_text": "failure"}]
+        
+        prompt = (
+            f"{user.username} let down their team by hitting snooze at {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)}"
+        )
+        result = result = generator(prompt, max_new_tokens=25, num_return_sequences=1)
+        message = result[0]["generated_text"]
     
         await group_websockets[user.groups[0].group_id].broadcast(BroadcastMessage(
             "to-snooze",
             user.username,
             {
-                "message": result[0]["summary_text"],
+                "message": message,
+                "asleep": [u.username for u in user.groups[0].users if u.is_asleep],
+                "awake": [u.username for u in user.groups[0].users if not u.is_asleep]
             }
         ))
-    return {"message": f"{username} has hit snooze {user.current_snooze_counter} times in a row"}
+    return {"message": message}
 
 
 # #############################
