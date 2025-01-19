@@ -42,6 +42,7 @@ export default function AppLayout() {
               size={24}
             />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -55,6 +56,7 @@ export default function AppLayout() {
               size={24}
             />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -68,6 +70,7 @@ export default function AppLayout() {
               size={24}
             />
           ),
+          headerShown: false,
         }}
       />
     </Tabs>

@@ -7,6 +7,8 @@ export const theme = {
       main: '#F3F2F1',
       menu: '#EEEDEC',
       white: '#FFFFFF',
+      selected: '#FFFFFF',
+      avatar: '#EEEDEC',
     },
     text: {
       primary: '#4B361F',

@@ -43,6 +43,20 @@ export const typography = StyleSheet.create({
     includeFontPadding: false,
     textAlignVertical: 'center',
   },
+  timeValue: {
+    fontFamily: 'Geist-Light',
+    fontSize: 54,
+    lineHeight: 54,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+  },
+  timePeriod: {
+    fontFamily: 'Geist-Regular',
+    fontSize: 24,
+    lineHeight: 24,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+  },
 });
 
 // Helper function to combine typography styles with additional styles
