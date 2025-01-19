@@ -1,0 +1,11 @@
+services:
+  fastapi:
+    extends:
+      file: compose.yaml
+      service: fastapi
+    env_file:
+      - .env
+    volumes:
+      - ./fastapi:/app
+    command: fastapi dev main.py --host 0.0.0.0
+

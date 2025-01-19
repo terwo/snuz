@@ -25,9 +25,25 @@ export default function AppLayout() {
         headerTintColor: theme.colors.text.primary,
         tabBarStyle: {
           backgroundColor: theme.colors.background.menu,
+          height: 70,
+          paddingVertical: 12,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderTopWidth: 0,
         },
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.text.primary,
+        tabBarIconStyle: {
+          marginBottom: 0,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          marginTop: 0,
+        },
+        tabBarItemStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
       }}
     >
       <Tabs.Screen
@@ -38,9 +54,10 @@ export default function AppLayout() {
             <Ionicons
               name={focused ? "bed" : "bed-outline"}
               color={color}
-              size={24}
+              size={28}
             />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -51,9 +68,10 @@ export default function AppLayout() {
             <Ionicons
               name={focused ? "alarm" : "alarm-outline"}
               color={color}
-              size={24}
+              size={28}
             />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -64,9 +82,10 @@ export default function AppLayout() {
             <Ionicons
               name={focused ? "person" : "person-outline"}
               color={color}
-              size={24}
+              size={28}
             />
           ),
+          headerShown: false,
         }}
       />
     </Tabs>
