@@ -28,6 +28,7 @@ log = logging.getLogger(__name__)
 generator = pipeline('text-generation', model='distilgpt2')
 
 
+
 ##################
 # DATABASE SETUP #
 ##################
