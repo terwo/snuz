@@ -25,7 +25,7 @@ MIN_SCORE = 0
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
-generator = pipeline('text-generation', model='gpt2')
+generator = pipeline('text-generation', model='distilgpt2')
 
 
 ##################
