@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.text.primary,
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.xl,
+    marginVertical: theme.spacing.md,
     borderRadius: 25,
     width: "90%",
   },

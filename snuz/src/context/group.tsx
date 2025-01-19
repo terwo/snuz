@@ -149,8 +149,16 @@ export function GroupProvider({ children }: { children: React.ReactNode }) {
         utcData.members.push(utcData.owner_username);
       }
 
-      const response = await createNewGroup(utcData);
-      setGroup(response);
+      // Create the group
+      await createNewGroup(utcData);
+
+      // After successful creation, fetch the group data
+      const groupData = await fetchGroupInfo(utcData.owner_username);
+      if (!groupData) {
+        throw new Error("Failed to fetch group data after creation");
+      }
+      
+      setGroup(groupData);
     } catch (error) {
       console.error("Error creating group:", error);
       throw error;

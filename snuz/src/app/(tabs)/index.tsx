@@ -152,10 +152,10 @@ const styles = StyleSheet.create({
   },
   welcomeBearImage: {
     width: "80%",
-    height: undefined,
+    height: 300,
     aspectRatio: 1,
     marginBottom: theme.spacing.xl,
-  },
+  } as const,
   createPlanButton: {
     // backgroundColor: theme.colors.primary.main,
     paddingVertical: theme.spacing.sm,
@@ -175,25 +175,30 @@ const styles = StyleSheet.create({
   status: {
     fontSize: 16,
     color: "#666666",
+    marginTop: theme.spacing.lg,
   },
   timer: {
     fontSize: 18,
     color: "#333333",
   },
   bearImage: {
-    width: "100%",
-    height: undefined,
+    width: "80%",
+    height: 300,
     aspectRatio: 1,
-  },
+    marginTop: theme.spacing.lg,
+    marginBottom: theme.spacing.lg,
+  } as const,
   message: {
     fontSize: 16,
     color: "#666666",
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
   },
   sleepButton: {
-    backgroundColor: theme.colors.background.menu,
-    paddingHorizontal: theme.spacing.lg,
+    backgroundColor: theme.colors.background.main,
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
     borderRadius: 25,
-    marginTop: theme.spacing.md,
   },
   sleepButtonText: {
     color: theme.colors.text.primary,

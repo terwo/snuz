@@ -62,16 +62,37 @@ export default function NewPlan() {
         ...selectedUsers
       ];
 
-      // Convert local times to UTC strings
-      const wakeTimeUTC = new Date(wakeUpTime).toISOString();
-      const sleepTimeUTC = new Date(sleepTime).toISOString();
+      // Get today's date
+      const today = new Date();
+      
+      // Set up sleep time for today
+      const sleepDate = new Date(sleepTime);
+      sleepDate.setFullYear(today.getFullYear());
+      sleepDate.setMonth(today.getMonth());
+      sleepDate.setDate(today.getDate());
+      
+      // If sleep time is before current time, set it to tomorrow
+      if (sleepDate < today) {
+        sleepDate.setDate(sleepDate.getDate() + 1);
+      }
+      
+      // Set up wake time based on sleep time
+      const wakeDate = new Date(wakeUpTime);
+      wakeDate.setFullYear(sleepDate.getFullYear());
+      wakeDate.setMonth(sleepDate.getMonth());
+      wakeDate.setDate(sleepDate.getDate());
+      
+      // If wake time is before sleep time, it means wake up is next day
+      if (wakeDate < sleepDate) {
+        wakeDate.setDate(wakeDate.getDate() + 1);
+      }
 
       await createGroup({
         owner_username: username,
-        start_date: new Date().toISOString(),
         members: selectedMembers,
-        wake_time: wakeTimeUTC,
-        sleep_time: sleepTimeUTC,
+        sleep_time: sleepDate.toISOString(),
+        wake_time: wakeDate.toISOString(),
+        start_date: sleepDate.toISOString(), // Use sleep time as start date
         days_left: parseInt(planDuration, 10)
       });
 

@@ -29,7 +29,10 @@ export default function Group() {
     setupNotifications();
   }, []);
 
-  // Split time formatting function
+  useEffect(() => {
+    console.log('Current group data:', group);
+  }, [group]);
+
   const formatTime = (date: Date) => {
     const timeStr = date.toLocaleTimeString('en-US', {
       hour: 'numeric',
@@ -37,18 +40,14 @@ export default function Group() {
       hour12: true
     });
     
-    // Split the time string into time and period (AM/PM)
     const [time, period] = timeStr.split(' ');
     return { time, period };
   };
 
-  // Update the time display in renderAlarmState
   const renderTimeValue = (timestamp: string | undefined) => {
     if (!timestamp) return { time: '--:--', period: '' };
     return formatTime(new Date(timestamp));
   };
-
-  
 
   const renderNoAlarmState = () => (
     <View style={styles.content}>
@@ -58,11 +57,7 @@ export default function Group() {
 
       <Image
         source={require("../../../assets/images/snooze_behind.png")}
-        style={{
-          width: "100%",
-          height: undefined,
-          aspectRatio: 1,
-        }}
+        style={styles.welcomeBearImage}
         resizeMode="contain"
       />
 
@@ -81,90 +76,86 @@ export default function Group() {
     </View>
   );
 
-  const renderAlarmState = () => (
-    <View style={styles.content}>
-      <Text style={combineTypography(theme.typography.title, styles.title)}>
-        Sleep Plan
-      </Text>
+  const renderAlarmState = () => {
+    if (!group || !group.members) {
+      console.log('No group data available:', group);
+      return renderNoAlarmState();
+    }
 
-      <View style={styles.commitmentContainer}>
-        <Text
-          style={combineTypography(theme.typography.p, styles.commitmentText)}
-        >
-          committed with {group?.members.length ? group.members.length - 1 : 0}{" "}
-          others
-        </Text>
-        <Text
-          style={combineTypography(theme.typography.p, styles.commitmentText)}
-        >
-          for {group?.days_left} days
-        </Text>
-      </View>
+    console.log('Rendering alarm state with group:', group);
 
-      <View style={styles.timesContainer}>
-        <View style={styles.timeBlock}>
-          <Text style={combineTypography(theme.typography.p, styles.timeLabel)}>
-            Wake up at
+    return (
+      <View style={styles.content}>
+        <Text style={combineTypography(theme.typography.title, styles.title)}>
+          Sleep Plan
+        </Text>
+
+        <View style={styles.commitmentContainer}>
+          <Text
+            style={combineTypography(theme.typography.p, styles.commitmentText)}
+          >
+            committed with {group.members.length - 1} others
           </Text>
-          <View style={styles.timeValueContainer}>
-            <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {renderTimeValue(group?.wake_time).time}
-            </Text>
-            <Text style={[combineTypography(theme.typography.timeValue, styles.timeValue), styles.timePeriod]}>
-              {renderTimeValue(group?.wake_time).period}
-            </Text>
-          </View>
+          <Text
+            style={combineTypography(theme.typography.p, styles.commitmentText)}
+          >
+            for {group.days_left} days
+          </Text>
         </View>
 
-        <View style={styles.timeBlock}>
-          <Text style={combineTypography(theme.typography.p, styles.timeLabel)}>
-            Sleep at
-          </Text>
-          <View style={styles.timeValueContainer}>
-            <Text style={combineTypography(theme.typography.timeValue, styles.timeValue)}>
-              {renderTimeValue(group?.sleep_time).time}
+        <View style={styles.timesContainer}>
+          <View style={styles.timeBlock}>
+            <Text style={combineTypography(theme.typography.p, styles.timeLabel)}>
+              Wake up at
             </Text>
-            <Text style={[combineTypography(theme.typography.timeValue, styles.timeValue), styles.timePeriod]}>
-              {renderTimeValue(group?.sleep_time).period}
-            </Text>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.rankingsContainer}>
-        <Text
-          style={combineTypography(theme.typography.h2, styles.rankingsTitle)}
-        >
-          Rankings
-        </Text>
-        {group?.members.map((member, index) => (
-          <View key={member} style={[
-            styles.rankingRow,
-            member === username && styles.selectedRank
-          ]}>
-            <Text style={styles.rankNumber}>{index + 1}</Text>
-            <View style={styles.rankAvatar}>
-              <Text>🐻</Text>
+            <View style={styles.timeValueContainer}>
+              <Text style={styles.timeValue}>
+                {renderTimeValue(group.wake_time).time}
+              </Text>
+              <Text style={styles.timePeriod}>
+                {renderTimeValue(group.wake_time).period}
+              </Text>
             </View>
-            <Text
-              style={combineTypography(theme.typography.p, styles.rankName)}
-            >
-              {member}
-            </Text>
-            <Text
-              style={combineTypography(theme.typography.p, styles.rankScore)}
-            >
-              597
-            </Text>
           </View>
-        ))}
+
+          <View style={styles.timeBlock}>
+            <Text style={combineTypography(theme.typography.p, styles.timeLabel)}>
+              Sleep at
+            </Text>
+            <View style={styles.timeValueContainer}>
+              <Text style={styles.timeValue}>
+                {renderTimeValue(group.sleep_time).time}
+              </Text>
+              <Text style={styles.timePeriod}>
+                {renderTimeValue(group.sleep_time).period}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.rankingsContainer}>
+          <Text style={styles.rankingsTitle}>Rankings</Text>
+          {group.members.map((member, index) => (
+            <View key={member} style={[
+              styles.rankingRow,
+              member === username && styles.selectedRank
+            ]}>
+              <Text style={styles.rankNumber}>{index + 1}</Text>
+              <View style={styles.rankAvatar}>
+                <Text>🐻</Text>
+              </View>
+              <Text style={styles.rankName}>{member}</Text>
+              <Text style={styles.rankScore}>597</Text>
+            </View>
+          ))}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {group ? renderAlarmState() : renderNoAlarmState()}
+      {!group ? renderNoAlarmState() : renderAlarmState()}
     </SafeAreaView>
   );
 }
@@ -181,28 +172,16 @@ const styles = StyleSheet.create({
   title: {
     color: theme.colors.text.primary,
     textAlign: "center",
-    marginBottom: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
   },
-  bearContainer: {
-    width: 256,
-    height: 256,
-    backgroundColor: theme.colors.background.menu,
-    borderRadius: 128,
-    marginBottom: theme.spacing.xl,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-  },
-  bearEmoji: {
-    fontSize: 36,
-  },
+  welcomeBearImage: {
+    width: "100%",
+    height: 300,
+    aspectRatio: 1,
+  } as const,
   textContainer: {
     alignItems: "center",
-  },
-  greeting: {
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.sm,
-    textAlign: "center",
+    marginTop: theme.spacing.lg,
   },
   subtitle: {
     color: theme.colors.text.primary,
@@ -212,53 +191,30 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: theme.spacing.xl,
     right: theme.spacing.xl,
+    // backgroundColor: theme.colors.primary.main,
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: theme.colors.accent,
     alignItems: "center",
     justifyContent: "center",
     elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowRadius: 3.84,
   },
   commitmentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: theme.spacing.xl,
-    flexWrap: "wrap",
+    marginBottom: theme.spacing.lg,
   },
   commitmentText: {
     color: theme.colors.text.primary,
-    marginHorizontal: theme.spacing.xs,
-  },
-  avatarGroup: {
-    flexDirection: "row",
-    marginHorizontal: theme.spacing.xs,
-  },
-  avatarCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: theme.colors.background.menu,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderColor: theme.colors.background.white,
+    textAlign: "center",
   },
   timesContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 16,
-    marginBottom: 24,
-    width: "100%",
+    marginBottom: theme.spacing.xl,
   },
   timeBlock: {
-    alignItems: "flex-start",
-    minWidth: "40%",
+    marginBottom: theme.spacing.lg,
   },
   timeLabel: {
     color: theme.colors.text.primary,
@@ -267,70 +223,56 @@ const styles = StyleSheet.create({
   timeValueContainer: {
     flexDirection: "row",
     alignItems: "baseline",
-    gap: 8,
   },
   timeValue: {
+    fontSize: 36,
     color: theme.colors.text.primary,
-    fontSize: 32,
+    fontWeight: "600",
   },
   timePeriod: {
     fontSize: 16,
-    marginLeft: 4,
-    alignSelf: 'flex-end',
-    marginBottom: 4,
+    color: theme.colors.text.primary,
+    marginLeft: theme.spacing.xs,
   },
   rankingsContainer: {
-    backgroundColor: theme.colors.background.menu,
-    borderRadius: 16,
-    padding: 16,
-    paddingHorizontal: 24,
     flex: 1,
-    marginBottom: 16,
   },
   rankingsTitle: {
+    fontSize: 20,
+    fontWeight: "600",
     color: theme.colors.text.primary,
     marginBottom: theme.spacing.md,
   },
   rankingRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginVertical: 4,
-    borderRadius: 12,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    marginBottom: theme.spacing.xs,
+    borderRadius: 8,
   },
   selectedRank: {
     backgroundColor: theme.colors.background.selected,
   },
   rankNumber: {
-    width: 24,
-    textAlign: "center",
+    width: 30,
     color: theme.colors.text.primary,
-    fontSize: 16,
   },
   rankAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: theme.colors.background.avatar,
-    marginHorizontal: 12,
     alignItems: "center",
     justifyContent: "center",
+    marginRight: theme.spacing.md,
   },
   rankName: {
     flex: 1,
     color: theme.colors.text.primary,
-    fontSize: 16,
   },
   rankScore: {
     color: theme.colors.text.primary,
-    marginLeft: 8,
-    fontSize: 16,
-  },
-  bearImage: {
-    width: "100%", // Will take up 80% of the parent container width
-    height: undefined, // Let height adjust automatically
-    aspectRatio: 1, // Maintain 1:1 aspect ratio
-    // marginVertical: theme.spacing.xl,
+    fontWeight: "600",
   },
 });

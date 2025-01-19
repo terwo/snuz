@@ -24,7 +24,7 @@ const BunkBed = ({ bear, index }: { bear: BearStatus; index: number }) => {
         style={styles.bunkImage}
         resizeMode="contain"
       />
-      <Text style={combineTypography(theme.typography.h2, styles.bearName)}>
+      <Text style={combineTypography(theme.typography.title, styles.bearName)}>
         {bear.name}
       </Text>
     </View>
@@ -76,8 +76,12 @@ export default function Sleep() {
 
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
-          <Text style={styles.title}>ZZZ...</Text>
-          <Text style={styles.subtitle}>Sweet dreams &lt;33</Text>
+          <Text style={combineTypography(theme.typography.title, styles.title)}>
+            ZZZ...
+          </Text>
+          <Text style={combineTypography(theme.typography.h2, styles.subtitle)}>
+            Sweet dreams &lt;33
+          </Text>
 
           <View style={styles.bunkBedContainer}>
             {bears.map((bear, index) => (
@@ -122,7 +126,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     color: "#FFFFFF",
-    fontWeight: "bold",
     marginTop: theme.spacing.md,
     marginBottom: theme.spacing.md,
   },
