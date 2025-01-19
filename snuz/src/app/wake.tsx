@@ -1,35 +1,35 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../styles/theme";
-import { useAudioPlayer } from "expo-audio";
+// import { useAudioPlayer } from "expo-audio";
 import { useEffect } from "react";
 import { useRouter } from "expo-router";
 
 export default function Wake() {
   const router = useRouter();
   // Create an audio player instance with the alarm sound
-  const player = useAudioPlayer(require("../../assets/audio/bear_roar.mp3"));
+  // const player = useAudioPlayer(require("../../assets/audio/bear_roar.mp3"));
 
   useEffect(() => {
     // Start playing as soon as the screen loads
-    player.play();
+    // player.play();
     // Set it to loop
-    player.loop = true;
+    // player.loop = true;
 
     return () => {
       // Cleanup when component unmounts
-      player.remove();
+      // player.remove();
     };
   }, []);
 
   const handleStop = async () => {
-    await player.pause();
+    // await player.pause();
     // Navigate to game or verification screen
     router.push("/verify");
   };
 
   const handleSnooze = async () => {
-    await player.pause();
+    // await player.pause();
     // Add snooze logic here - maybe go back with a new timer
     router.back();
   };

@@ -21,7 +21,7 @@ export default function RootLayout() {
     <AuthProvider>
       <GroupProvider>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
+        {/* <Stack.Screen name="index" /> */}
         <Stack.Screen name="(tabs)" />
       </Stack>
       </GroupProvider>
