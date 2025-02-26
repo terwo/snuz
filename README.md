@@ -5,7 +5,7 @@
 <div align="center">
 
   ![Badge](https://img.shields.io/badge/Version-1.0-brown)  ![Badge](https://img.shields.io/badge/License-Apache_2.0-green)  ![Badge](https://img.shields.io/badge/For-Sleep-blue) ![Badge](https://img.shields.io/badge/nwHacks2025-Winner-gold) ![Badge](https://img.shields.io/badge/Mobile-React%20Native-blue)  
-  ![Badge](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red)  
+  ![Badge](https://img.shields.io/badge/Made%20with-%F0%9F%98%B4-teal)  
 
 </div>
 
@@ -17,15 +17,7 @@ We all know the struggle: hackathons mess up our sleep schedules. **Snuz** is a 
 
 
 ## Tech Stack
-<div align="center">
-  <img src="https://img.shields.io/badge/Expo-000000?style=for-the-badge&logo=expo&logoColor=white"/>
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white"/>
-  <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white"/>
-  <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/>
-  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Websockets-000000?style=for-the-badge&logo=socket.io&logoColor=white"/>
-</div>
+<img src="https://img.shields.io/badge/Expo-000000?style=for-the-badge&logo=expo&logoColor=white"/><img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/><img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white"/><img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white"/><img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white"/><img src="https://img.shields.io/badge/Websockets-000000?style=for-the-badge&logo=socket.io&logoColor=white"/>
 
 - **Mobile App:** Developed using **Expo** and **React Native** for a smooth, cross-platform experience.
 - **Backend & Real-Time:** Built with **FastAPI** connected to a **Supabase** database and utilizing **WebSockets** for live updates.
