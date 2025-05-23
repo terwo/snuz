@@ -42,7 +42,6 @@ export default function Sleep() {
 
   useEffect(() => {
     if (timeToAlarm <= 0) {
-      // Play a transition sound if desired
       router.push("/wake");
     }
     const timer = setInterval(() => {
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
   },
   bunkImage: {
     height: "100%",
-    aspectRatio: 1.5, // Adjust based on your image aspect ratio
+    aspectRatio: 1.5,
   },
   bearName: {
     color: "#FFFFFF",
