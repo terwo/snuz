@@ -38,7 +38,7 @@ export default function Sleep() {
     { name: "Jordan", isAsleep: true },
   ]);
 
-  const [timeToAlarm, setTimeToAlarm] = useState(5); // 8 hours in seconds
+  const [timeToAlarm, setTimeToAlarm] = useState(5); // Just 5 seconds for testing purposes
 
   useEffect(() => {
     if (timeToAlarm <= 0) {
