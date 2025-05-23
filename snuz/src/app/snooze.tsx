@@ -53,7 +53,7 @@ export default function Snooze() {
         <Text style={styles.time}>{formatTime(timeLeft)}</Text>
 
         <Image
-          source={require("../../assets/images/snooze.gif")} // Add your GIF here
+          source={require("../../assets/images/snooze.gif")}
           style={styles.bearImage}
           resizeMode="contain"
         />
